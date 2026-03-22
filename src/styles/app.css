@@ -1,0 +1,93 @@
+@import 'tailwindcss' source('../');
+@import './fonts.css';
+@import './scanlines.css';
+@import './glitch.css';
+
+@theme {
+  /* Surface hierarchy - tonal layering, no borders */
+  --color-surface: #060e20;
+  --color-surface-container-low: #091328;
+  --color-surface-container: #0f1930;
+  --color-surface-container-high: #141f38;
+  --color-surface-container-highest: #192540;
+  --color-surface-bright: #1f2b49;
+  --color-surface-variant: #192540;
+  --color-surface-dim: #0a141e;
+
+  /* Primary - Cyan energy */
+  --color-primary: #8ff5ff;
+  --color-primary-container: #00eefc;
+  --color-primary-dim: #00deec;
+
+  /* Secondary - Magenta */
+  --color-secondary: #ff59e3;
+  --color-secondary-container: #ad009b;
+
+  /* Tertiary - Lime */
+  --color-tertiary: #deffab;
+  --color-tertiary-container: #abfc00;
+
+  /* On-surface text */
+  --color-on-surface: #dee5ff;
+  --color-on-surface-variant: #a3aac4;
+  --color-on-primary: #005d63;
+  --color-on-secondary: #42003a;
+  --color-on-tertiary: #436600;
+
+  /* Outline */
+  --color-outline: #6d758c;
+  --color-outline-variant: #40485d;
+
+  /* Error */
+  --color-error: #ff716c;
+  --color-error-dim: #d7383b;
+
+  /* Accent (Valorant red) */
+  --color-accent: #ff4655;
+
+  /* Font families */
+  --font-headline: 'Space Grotesk', system-ui, sans-serif;
+  --font-body: 'Inter', system-ui, sans-serif;
+  --font-label: 'Space Grotesk', system-ui, sans-serif;
+  --font-mono: 'JetBrains Mono', ui-monospace, monospace;
+
+  /* Neon glow shadows */
+  --shadow-neon-cyan: 0 0 20px rgba(143, 245, 255, 0.3);
+  --shadow-neon-cyan-lg: 0 0 40px rgba(143, 245, 255, 0.4);
+  --shadow-neon-magenta: 0 0 20px rgba(255, 89, 227, 0.3);
+  --shadow-neon-accent: 0 0 20px rgba(255, 70, 85, 0.4);
+  --shadow-neon-accent-lg: 0 0 40px rgba(255, 70, 85, 0.8);
+
+  /* Border radius - tactical sharp edges */
+  --radius-sm: 2px;
+  --radius-md: 4px;
+  --radius-lg: 8px;
+
+  /* Animation durations */
+  --duration-fast: 150ms;
+  --duration-normal: 300ms;
+  --duration-slow: 500ms;
+}
+
+/* Base styles */
+body {
+  font-family: var(--font-body);
+  background-color: var(--color-surface);
+  color: var(--color-on-surface);
+  overflow-x: hidden;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-headline);
+}
+
+/* Noise texture overlay utility */
+.noise-bg {
+  background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+  opacity: 0.05;
+}
+
+/* Clip path utilities from Stitch designs */
+.clipped-tr { clip-path: polygon(0 0, 92% 0, 100% 15%, 100% 100%, 0 100%); }
+.clipped-bl { clip-path: polygon(0 0, 100% 0, 100% 100%, 8% 100%, 0 85%); }
+.clipped-full { clip-path: polygon(10% 0, 100% 0, 100% 70%, 90% 100%, 0 100%, 0 30%); }

@@ -1,0 +1,27 @@
+.scanline-overlay {
+  background: linear-gradient(to bottom, transparent, rgba(143, 245, 255, 0.03) 50%, transparent);
+  height: 100px;
+  width: 100%;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 60;
+  pointer-events: none;
+  animation: scanline 8s linear infinite;
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+@keyframes flicker {
+  0%, 100% { opacity: 0.1; }
+  50% { opacity: 0.15; }
+  15%, 85% { opacity: 0.08; }
+  20%, 80% { opacity: 0.12; }
+}
+
+.animate-flicker {
+  animation: flicker 3s infinite;
+}
