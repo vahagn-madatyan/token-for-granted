@@ -28,11 +28,11 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Space Grotesk renders on headlines and Inter renders on body text throughout the shell
   3. Every UI component (GlitchText, NeonButton, HexCard, MetricDisplay, TierBadge, StatusIndicator, ProgressBar, TokenInput, TerminalLog) renders with correct Neon Monolith colors and tonal surface shifts (no 1px borders)
   4. Animation hooks work: GlitchText shows clip-path color channel shift, MetricDisplay counts up numbers, useTypewriter reveals text character-by-character
-**Plans:** 4 plans
+**Plans:** 3/4 plans executed
 
 Plans:
 - [x] 01-01-PLAN.md -- Scaffold TanStack Start project, Tailwind v4 with Neon Monolith tokens, fonts, CSS effects
-- [ ] 01-02-PLAN.md -- Root layout (Shell, Header, Footer, ScanlineOverlay), Router with 5 routes, animation hooks and variants
+- [x] 01-02-PLAN.md -- Root layout (Shell, Header, Footer, ScanlineOverlay), Router with 5 routes, animation hooks and variants
 - [x] 01-03-PLAN.md -- Display UI components (GlitchText, NeonButton, HexCard, TierBadge, StatusIndicator)
 - [ ] 01-04-PLAN.md -- Data/interactive UI components (MetricDisplay, ProgressBar, TokenInput, TerminalLog)
 
@@ -92,7 +92,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Design System and Component Library | 0/4 | Planning complete | - |
+| 1. Design System and Component Library | 3/4 | In Progress|  |
 | 2. Primary Valuation Pipeline | 0/3 | Not started | - |
 | 3. Remaining Screens | 0/3 | Not started | - |
 | 4. Polish and Production Deploy | 0/2 | Not started | - |

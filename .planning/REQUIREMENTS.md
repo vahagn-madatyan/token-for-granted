@@ -10,8 +10,8 @@
 - [x] **FOUN-01**: TanStack Start project scaffolded with Cloudflare Workers support
 - [x] **FOUN-02**: Tailwind CSS v4 configured with full Neon Monolith design token system
 - [x] **FOUN-03**: Space Grotesk and Inter fonts loaded and applied (headlines / body)
-- [ ] **FOUN-04**: Root layout with Shell, Header (nav links), Footer, and ScanlineOverlay
-- [ ] **FOUN-05**: TanStack Router configured with all 5 routes
+- [x] **FOUN-04**: Root layout with Shell, Header (nav links), Footer, and ScanlineOverlay
+- [x] **FOUN-05**: TanStack Router configured with all 5 routes
 - [x] **FOUN-06**: Vite config and wrangler.jsonc with Cloudflare bindings (AI, D1, KV, R2)
 
 ### UI Components
@@ -25,10 +25,10 @@
 - [ ] **UICM-07**: ProgressBar component with animated fill and density scores
 - [ ] **UICM-08**: TokenInput component for asset description entry
 - [ ] **UICM-09**: TerminalLog component with monospace timestamped entries
-- [ ] **UICM-10**: useGlitch hook for triggerable glitch effects
-- [ ] **UICM-11**: useTypewriter hook for character-by-character text reveal
-- [ ] **UICM-12**: useCountUp hook for animated number transitions via requestAnimationFrame
-- [ ] **UICM-13**: Shared Framer Motion variants (fadeInUp, staggerContainer, scaleIn, pulseGlow)
+- [x] **UICM-10**: useGlitch hook for triggerable glitch effects
+- [x] **UICM-11**: useTypewriter hook for character-by-character text reveal
+- [x] **UICM-12**: useCountUp hook for animated number transitions via requestAnimationFrame
+- [x] **UICM-13**: Shared Framer Motion variants (fadeInUp, staggerContainer, scaleIn, pulseGlow)
 
 ### Screen 1 -- Tactical Entry Protocol
 
@@ -143,8 +143,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FOUN-01 | Phase 1 | Complete |
 | FOUN-02 | Phase 1 | Complete |
 | FOUN-03 | Phase 1 | Complete |
-| FOUN-04 | Phase 1 | Pending |
-| FOUN-05 | Phase 1 | Pending |
+| FOUN-04 | Phase 1 | Complete |
+| FOUN-05 | Phase 1 | Complete |
 | FOUN-06 | Phase 1 | Complete |
 | UICM-01 | Phase 1 | Complete |
 | UICM-02 | Phase 1 | Complete |
@@ -155,10 +155,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UICM-07 | Phase 1 | Pending |
 | UICM-08 | Phase 1 | Pending |
 | UICM-09 | Phase 1 | Pending |
-| UICM-10 | Phase 1 | Pending |
-| UICM-11 | Phase 1 | Pending |
-| UICM-12 | Phase 1 | Pending |
-| UICM-13 | Phase 1 | Pending |
+| UICM-10 | Phase 1 | Complete |
+| UICM-11 | Phase 1 | Complete |
+| UICM-12 | Phase 1 | Complete |
+| UICM-13 | Phase 1 | Complete |
 | ENT-01 | Phase 2 | Pending |
 | ENT-02 | Phase 2 | Pending |
 | ENT-03 | Phase 2 | Pending |

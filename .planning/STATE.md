@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 01-03-PLAN.md (pure display components)
-last_updated: "2026-03-22T06:05:44.654Z"
+stopped_at: Completed 01-02-PLAN.md (root layout, routes, animation hooks)
+last_updated: "2026-03-22T06:08:14.680Z"
 progress:
   total_phases: 4
   completed_phases: 0
   total_plans: 4
-  completed_plans: 2
+  completed_plans: 3
 ---
 
 # Project State
@@ -24,7 +24,7 @@ See: .planning/PROJECT.md (updated 2026-03-21)
 ## Current Position
 
 Phase: 01 (design-system-and-component-library) — EXECUTING
-Plan: 3 of 4
+Plan: 4 of 4
 
 ## Performance Metrics
 
@@ -48,6 +48,7 @@ Plan: 3 of 4
 *Updated after each plan completion*
 | Phase 01 P01 | 6min | 2 tasks | 17 files |
 | Phase 01 P03 | 2min | 2 tasks | 5 files |
+| Phase 01 P02 | 4min | 2 tasks | 15 files |
 
 ## Accumulated Context
 
@@ -65,6 +66,8 @@ Recent decisions affecting current work:
 - [Phase 01]: Used giget to clone TanStack Start cloudflare template since C3 CLI requires TTY
 - [Phase 01]: NeonButton uses group class on button for self-contained hover sweep overlay
 - [Phase 01]: Components use tonal surface-container shifts and border-l accents, no 1px sectioning borders
+- [Phase 01]: Used useRouterState for active link detection in Header -- simpler than activeProps for pathname comparison
+- [Phase 01]: Shell uses fixed z-0 background layers with relative z-10 main content for persistent HUD effects across route transitions
 
 ### Pending Todos
 
@@ -76,6 +79,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T06:05:44.652Z
-Stopped at: Completed 01-03-PLAN.md (pure display components)
+Last session: 2026-03-22T06:08:14.678Z
+Stopped at: Completed 01-02-PLAN.md (root layout, routes, animation hooks)
 Resume file: None
