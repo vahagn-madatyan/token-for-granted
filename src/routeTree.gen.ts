@@ -9,38 +9,105 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
+import { Route as WhatIfRouteImport } from './routes/what-if'
+import { Route as TerminalRouteImport } from './routes/terminal'
+import { Route as RankingRouteImport } from './routes/ranking'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ValuationAssetIdRouteImport } from './routes/valuation.$assetId'
 
+const WhatIfRoute = WhatIfRouteImport.update({
+  id: '/what-if',
+  path: '/what-if',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TerminalRoute = TerminalRouteImport.update({
+  id: '/terminal',
+  path: '/terminal',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const RankingRoute = RankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ValuationAssetIdRoute = ValuationAssetIdRouteImport.update({
+  id: '/valuation/$assetId',
+  path: '/valuation/$assetId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/ranking': typeof RankingRoute
+  '/terminal': typeof TerminalRoute
+  '/what-if': typeof WhatIfRoute
+  '/valuation/$assetId': typeof ValuationAssetIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/ranking': typeof RankingRoute
+  '/terminal': typeof TerminalRoute
+  '/what-if': typeof WhatIfRoute
+  '/valuation/$assetId': typeof ValuationAssetIdRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/ranking': typeof RankingRoute
+  '/terminal': typeof TerminalRoute
+  '/what-if': typeof WhatIfRoute
+  '/valuation/$assetId': typeof ValuationAssetIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/'
+  fullPaths: '/' | '/ranking' | '/terminal' | '/what-if' | '/valuation/$assetId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/'
-  id: '__root__' | '/'
+  to: '/' | '/ranking' | '/terminal' | '/what-if' | '/valuation/$assetId'
+  id:
+    | '__root__'
+    | '/'
+    | '/ranking'
+    | '/terminal'
+    | '/what-if'
+    | '/valuation/$assetId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  RankingRoute: typeof RankingRoute
+  TerminalRoute: typeof TerminalRoute
+  WhatIfRoute: typeof WhatIfRoute
+  ValuationAssetIdRoute: typeof ValuationAssetIdRoute
 }
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
+    '/what-if': {
+      id: '/what-if'
+      path: '/what-if'
+      fullPath: '/what-if'
+      preLoaderRoute: typeof WhatIfRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/terminal': {
+      id: '/terminal'
+      path: '/terminal'
+      fullPath: '/terminal'
+      preLoaderRoute: typeof TerminalRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ranking': {
+      id: '/ranking'
+      path: '/ranking'
+      fullPath: '/ranking'
+      preLoaderRoute: typeof RankingRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/': {
       id: '/'
       path: '/'
@@ -48,11 +115,22 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/valuation/$assetId': {
+      id: '/valuation/$assetId'
+      path: '/valuation/$assetId'
+      fullPath: '/valuation/$assetId'
+      preLoaderRoute: typeof ValuationAssetIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  RankingRoute: RankingRoute,
+  TerminalRoute: TerminalRoute,
+  WhatIfRoute: WhatIfRoute,
+  ValuationAssetIdRoute: ValuationAssetIdRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
