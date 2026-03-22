@@ -16,12 +16,12 @@
 
 ### UI Components
 
-- [ ] **UICM-01**: GlitchText component with CSS clip-path + color channel shift animation
-- [ ] **UICM-02**: NeonButton component with gradient CTA styling and ambient glow
-- [ ] **UICM-03**: HexCard component with tonal surface shifts (no 1px borders)
+- [x] **UICM-01**: GlitchText component with CSS clip-path + color channel shift animation
+- [x] **UICM-02**: NeonButton component with gradient CTA styling and ambient glow
+- [x] **UICM-03**: HexCard component with tonal surface shifts (no 1px borders)
 - [ ] **UICM-04**: MetricDisplay component for system stats with animated count-up
-- [ ] **UICM-05**: TierBadge component (S/A/B/C) with color-coded styling
-- [ ] **UICM-06**: StatusIndicator component for connection/auth status
+- [x] **UICM-05**: TierBadge component (S/A/B/C) with color-coded styling
+- [x] **UICM-06**: StatusIndicator component for connection/auth status
 - [ ] **UICM-07**: ProgressBar component with animated fill and density scores
 - [ ] **UICM-08**: TokenInput component for asset description entry
 - [ ] **UICM-09**: TerminalLog component with monospace timestamped entries
@@ -146,12 +146,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 | FOUN-04 | Phase 1 | Pending |
 | FOUN-05 | Phase 1 | Pending |
 | FOUN-06 | Phase 1 | Complete |
-| UICM-01 | Phase 1 | Pending |
-| UICM-02 | Phase 1 | Pending |
-| UICM-03 | Phase 1 | Pending |
+| UICM-01 | Phase 1 | Complete |
+| UICM-02 | Phase 1 | Complete |
+| UICM-03 | Phase 1 | Complete |
 | UICM-04 | Phase 1 | Pending |
-| UICM-05 | Phase 1 | Pending |
-| UICM-06 | Phase 1 | Pending |
+| UICM-05 | Phase 1 | Complete |
+| UICM-06 | Phase 1 | Complete |
 | UICM-07 | Phase 1 | Pending |
 | UICM-08 | Phase 1 | Pending |
 | UICM-09 | Phase 1 | Pending |
