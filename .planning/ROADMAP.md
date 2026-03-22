@@ -34,7 +34,7 @@ Plans:
 - [x] 01-01-PLAN.md -- Scaffold TanStack Start project, Tailwind v4 with Neon Monolith tokens, fonts, CSS effects
 - [x] 01-02-PLAN.md -- Root layout (Shell, Header, Footer, ScanlineOverlay), Router with 5 routes, animation hooks and variants
 - [x] 01-03-PLAN.md -- Display UI components (GlitchText, NeonButton, HexCard, TierBadge, StatusIndicator)
-- [ ] 01-04-PLAN.md -- Data/interactive UI components (MetricDisplay, ProgressBar, TokenInput, TerminalLog)
+- [x] 01-04-PLAN.md -- Data/interactive UI components (MetricDisplay, ProgressBar, TokenInput, TerminalLog)
 
 ### Phase 2: Primary Valuation Pipeline
 **Goal**: A user can enter an asset description on the Entry screen, receive an AI-powered valuation, and view the full tactical reveal with projected values and confidence scores
