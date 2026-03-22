@@ -1,153 +1,107 @@
-import { useState } from 'react'
 import { cn } from '~/lib/cn'
 import { useTypewriter } from '~/components/animations/useTypewriter'
-import { runScenario } from '~/core/functions/scenario.functions'
 
 interface ScenarioCardProps {
-  scenarioId: 'shakespearean-loop' | 'repo-foundry' | 'infinite-debate'
   title: string
-  description: string
-  intensity: string
-  classLabel: string
-  imageUrl: string
+  scenario: string
+  keyInsight: string
+  itemName: string
+  itemPrice: number
   accentColor: 'primary' | 'secondary' | 'error'
 }
 
 const accentMap = {
   primary: {
-    border: 'hover:border-primary-container/50',
-    classText: 'text-primary-container/40 group-hover:text-primary-container',
-    title: 'group-hover:text-primary-container',
-    play: 'text-primary-container',
+    border: 'border-primary-container/30',
+    title: 'text-primary-container',
+    insight: 'text-primary-container',
+    bg: 'bg-primary-container/5',
   },
   secondary: {
-    border: 'hover:border-secondary/50',
-    classText: 'text-secondary/40 group-hover:text-secondary',
-    title: 'group-hover:text-secondary',
-    play: 'text-secondary',
+    border: 'border-secondary/30',
+    title: 'text-secondary',
+    insight: 'text-secondary',
+    bg: 'bg-secondary/5',
   },
   error: {
-    border: 'hover:border-error/50',
-    classText: 'text-error/40 group-hover:text-error',
-    title: 'group-hover:text-error',
-    play: 'text-error',
+    border: 'border-error/30',
+    title: 'text-error',
+    insight: 'text-error',
+    bg: 'bg-error/5',
   },
 }
 
+const ACCENT_CYCLE: Array<'primary' | 'secondary' | 'error'> = ['primary', 'secondary', 'error']
+
+export function getAccentForIndex(index: number): 'primary' | 'secondary' | 'error' {
+  return ACCENT_CYCLE[index % ACCENT_CYCLE.length]
+}
+
 export function ScenarioCard({
-  scenarioId,
   title,
-  description,
-  intensity,
-  classLabel,
-  imageUrl,
+  scenario,
+  keyInsight,
+  itemName,
+  itemPrice,
   accentColor,
 }: ScenarioCardProps) {
-  const [isLoading, setIsLoading] = useState(false)
-  const [resultText, setResultText] = useState('')
-  const { displayText } = useTypewriter(resultText, 30)
-
+  const { displayText, isComplete } = useTypewriter(scenario, 20)
   const accent = accentMap[accentColor]
-
-  async function handlePlay() {
-    if (isLoading) return
-    setIsLoading(true)
-    setResultText('')
-    try {
-      const result = await runScenario({ data: { scenarioId } })
-      setResultText(result.text)
-    } catch (error) {
-      console.error('Scenario failed:', error)
-      setResultText('ERROR: Scenario generation failed. Neural pathway disrupted.')
-    } finally {
-      setIsLoading(false)
-    }
-  }
 
   return (
     <article
       className={cn(
-        'group relative bg-surface-container-high/60 backdrop-blur-md border border-outline-variant/20 aspect-[3/4] flex flex-col p-6 transition-all hover:-translate-y-2',
+        'relative bg-surface-container-high/60 backdrop-blur-md border p-6 transition-all',
         accent.border
       )}
       style={{ clipPath: 'polygon(0 0, 100% 0, 100% 92%, 92% 100%, 0 100%)' }}
     >
-      {/* Top-right class label */}
-      <div
-        className={cn(
-          'absolute top-0 right-0 p-4 font-label text-[10px] transition-colors',
-          accent.classText
-        )}
-      >
-        CLASS: {classLabel}
-      </div>
-
-      {/* Image area */}
-      <div className="flex-1 relative overflow-hidden mt-4">
-        <img
-          alt={title}
-          className="w-full h-full object-cover grayscale opacity-50 group-hover:grayscale-0 group-hover:opacity-80 transition-all duration-700"
-          src={imageUrl}
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-surface-container-high via-transparent to-transparent" />
-      </div>
-
-      {/* Content */}
-      <div className="mt-6 space-y-3">
-        <h3
-          className={cn(
-            'font-headline text-2xl font-black text-on-surface uppercase transition-colors tracking-tighter',
-            accent.title
-          )}
-        >
-          {title}
-        </h3>
-        <p className="font-body text-on-surface-variant text-sm leading-relaxed">
-          {description}
-        </p>
-
-        {/* Typewriter output */}
-        {(resultText || isLoading) && (
-          <div className="border-t border-outline-variant/20 pt-4 mt-4">
-            {isLoading ? (
-              <div className="font-label text-xs text-primary-container/60 animate-pulse">
-                GENERATING SCENARIO OUTPUT...
-              </div>
-            ) : (
-              <p className="font-label text-xs text-primary-container/80 leading-relaxed">
-                {displayText}
-                <span className="inline-block w-[2px] h-3 bg-primary-container/60 ml-0.5 animate-pulse" />
-              </p>
-            )}
+      {/* Header */}
+      <div className="flex justify-between items-start mb-4">
+        <div>
+          <div className="font-label text-[10px] text-outline uppercase tracking-widest mb-1">
+            WHAT IF SCENARIO
           </div>
-        )}
-
-        {/* Bottom row: intensity + play button */}
-        <div className="flex items-center justify-between pt-4">
-          <span className="font-label text-[10px] text-outline">
-            INTENSITY: {intensity}
-          </span>
-          <button
-            onClick={handlePlay}
-            disabled={isLoading}
+          <h3
             className={cn(
-              'hover:scale-125 transition-transform disabled:opacity-50',
-              accent.play
+              'font-headline text-xl font-black uppercase tracking-tighter',
+              accent.title
             )}
-            aria-label={`Play ${title} scenario`}
           >
-            <svg
-              width="24"
-              height="24"
-              viewBox="0 0 24 24"
-              fill="currentColor"
-              xmlns="http://www.w3.org/2000/svg"
-            >
-              <path d="M8 5.14v14l11-7l-11-7z" />
-            </svg>
-          </button>
+            {title}
+          </h3>
+        </div>
+        <div className="text-right">
+          <div className="font-label text-[9px] text-outline/50 uppercase">
+            {itemName}
+          </div>
+          <div className="font-headline text-sm font-bold text-on-surface">
+            ${itemPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
         </div>
       </div>
+
+      {/* Scenario text with typewriter */}
+      <div className="mb-6 min-h-[100px]">
+        <p className="font-body text-on-surface-variant text-sm leading-relaxed">
+          {displayText}
+          {!isComplete && (
+            <span className="inline-block w-[2px] h-3 bg-primary-container/60 ml-0.5 animate-pulse" />
+          )}
+        </p>
+      </div>
+
+      {/* Key insight */}
+      {isComplete && keyInsight && (
+        <div className={cn('p-4 border-l-2', accent.border, accent.bg)}>
+          <div className="font-label text-[10px] text-outline uppercase tracking-widest mb-1">
+            KEY INSIGHT
+          </div>
+          <p className={cn('font-body text-sm font-medium italic', accent.insight)}>
+            {keyInsight}
+          </p>
+        </div>
+      )}
     </article>
   )
 }

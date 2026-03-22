@@ -28,7 +28,7 @@ export const Route = createRootRoute({
       ...seo({
         title: 'TOKEN FOR GRANTED',
         description:
-          'A Valorant-themed tactical asset valuation dashboard with AI-powered analysis.',
+          'You take tokens for granted. See how many AI tokens your next purchase could buy — and what you could build instead.',
       }),
     ],
     links: [

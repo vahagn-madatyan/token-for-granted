@@ -1,5 +1,5 @@
 import { env } from 'cloudflare:workers'
-import type { AIValuationResponse } from '~/core/types'
+import type { AITokenAnalysisResponse } from '~/core/types'
 
 /**
  * Compute a deterministic cache key from description and category.
@@ -19,22 +19,22 @@ export async function computeCacheKey(
 }
 
 /**
- * Retrieve a cached AI valuation response from KV.
+ * Retrieve a cached AI token analysis response from KV.
  * Returns null if not found or expired.
  */
 export async function getCachedValuation(
   key: string
-): Promise<AIValuationResponse | null> {
-  const cached = await env.KV.get<AIValuationResponse>(key, 'json')
+): Promise<AITokenAnalysisResponse | null> {
+  const cached = await env.KV.get<AITokenAnalysisResponse>(key, 'json')
   return cached ?? null
 }
 
 /**
- * Store an AI valuation response in KV with 1-hour TTL.
+ * Store an AI token analysis response in KV with 1-hour TTL.
  */
 export async function setCachedValuation(
   key: string,
-  data: AIValuationResponse
+  data: AITokenAnalysisResponse
 ): Promise<void> {
   await env.KV.put(key, JSON.stringify(data), { expirationTtl: 3600 })
 }

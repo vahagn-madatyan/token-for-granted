@@ -8,7 +8,7 @@ interface SidebarItem {
 
 const SIDEBAR_ITEMS: SidebarItem[] = [
   {
-    label: 'DASHBOARD',
+    label: 'FEED',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <rect x="3" y="3" width="8" height="8" rx="1" />
@@ -19,7 +19,7 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     ),
   },
   {
-    label: 'ARSENAL',
+    label: 'TOKENS',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M5 19L19 5M5 5l14 14" />
@@ -28,7 +28,7 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     ),
   },
   {
-    label: 'ARCHIVES',
+    label: 'HISTORY',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M4 19.5v-15A2.5 2.5 0 016.5 2H20v20H6.5a2.5 2.5 0 010-5H20" />
@@ -37,7 +37,7 @@ const SIDEBAR_ITEMS: SidebarItem[] = [
     ),
   },
   {
-    label: 'PROTOCOL',
+    label: 'ENGINE',
     icon: (
       <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5">
         <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />

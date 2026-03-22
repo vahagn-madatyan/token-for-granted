@@ -1,54 +1,68 @@
-import { useState } from 'react'
 import { cn } from '~/lib/cn'
 
 interface LabParametersProps {
-  onRunSimulation?: () => void
+  itemName: string | null
+  itemPrice: number | null
+  manualPrice: string
+  onManualPriceChange: (value: string) => void
+  onRunScenario: () => void
+  isLoading: boolean
+  scenarioCount: number
 }
 
-const engines = [
-  { id: 'neural-void', name: 'NEURAL_VOID_V4', icon: '\u26A1', selected: true },
-  { id: 'chronos-logic', name: 'CHRONOS_LOGIC', icon: '\u23F3', selected: false },
-  { id: 'quantum-debate', name: 'QUANTUM_DEBATE', icon: '\u2B22', selected: false },
-] as const
-
-export function LabParameters({ onRunSimulation }: LabParametersProps) {
-  const [selectedEngine, setSelectedEngine] = useState('neural-void')
-  const [fuelValue, setFuelValue] = useState(78)
-
-  const fuelDisplay = ((fuelValue / 100) * 11.8).toFixed(1) + 'M'
+export function LabParameters({
+  itemName,
+  itemPrice,
+  manualPrice,
+  onManualPriceChange,
+  onRunScenario,
+  isLoading,
+  scenarioCount,
+}: LabParametersProps) {
+  const hasContext = itemName && itemPrice != null && itemPrice > 0
+  const displayPrice = hasContext
+    ? '$' + itemPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+    : manualPrice
+      ? '$' + Number(manualPrice).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })
+      : '$0.00'
 
   return (
     <>
       {/* Condensed horizontal bar for tablet and below */}
       <div className="flex lg:hidden items-center gap-4 px-4 py-3 bg-surface-container-low/40 backdrop-blur-sm border-b border-outline-variant/10 overflow-x-auto">
         <span className="font-headline text-sm font-black text-primary-container tracking-tighter uppercase whitespace-nowrap">
-          Lab Parameters
+          What If Lab
         </span>
         <div className="w-[1px] h-6 bg-outline-variant/20 shrink-0" />
-        <div className="flex gap-2 shrink-0">
-          {engines.map((engine) => {
-            const isSelected = selectedEngine === engine.id
-            return (
-              <button
-                key={engine.id}
-                onClick={() => setSelectedEngine(engine.id)}
-                className={cn(
-                  'px-3 py-1.5 font-headline font-bold text-[10px] transition-all whitespace-nowrap',
-                  isSelected
-                    ? 'bg-surface-container-highest border border-primary-container/20 text-primary-container'
-                    : 'bg-surface-container border border-outline-variant/20 text-outline hover:text-primary-container'
-                )}
-              >
-                {engine.icon} {engine.name}
-              </button>
-            )
-          })}
-        </div>
+        {hasContext ? (
+          <div className="flex items-center gap-3 shrink-0">
+            <span className="font-label text-[10px] text-outline uppercase">Item:</span>
+            <span className="font-headline font-bold text-primary-container text-xs uppercase">{itemName}</span>
+            <span className="font-label text-[10px] text-outline uppercase">Price:</span>
+            <span className="font-headline font-bold text-accent text-xs">{displayPrice}</span>
+          </div>
+        ) : (
+          <div className="flex items-center gap-2 shrink-0">
+            <span className="font-label text-[10px] text-outline uppercase">Amount: $</span>
+            <input
+              type="number"
+              min="0"
+              step="0.01"
+              value={manualPrice}
+              onChange={(e) => onManualPriceChange(e.target.value)}
+              className="w-24 bg-surface-container-highest border border-outline-variant/20 px-2 py-1 font-headline text-xs text-primary-container focus:outline-none focus:border-primary-container/40"
+              placeholder="0.00"
+            />
+          </div>
+        )}
         <div className="w-[1px] h-6 bg-outline-variant/20 shrink-0" />
-        <div className="flex items-center gap-2 shrink-0">
-          <span className="font-label text-[10px] text-outline uppercase">Fuel:</span>
-          <span className="font-headline font-bold text-primary-container text-xs">{fuelDisplay}</span>
-        </div>
+        <button
+          onClick={onRunScenario}
+          disabled={isLoading}
+          className="px-4 py-1.5 bg-accent text-surface font-headline font-bold text-[10px] tracking-widest uppercase hover:bg-accent/90 transition-colors disabled:opacity-50 shrink-0"
+        >
+          {isLoading ? 'GENERATING...' : 'GENERATE'}
+        </button>
       </div>
 
       {/* Full sidebar for desktop */}
@@ -59,100 +73,105 @@ export function LabParameters({ onRunSimulation }: LabParametersProps) {
         {/* Title */}
         <div className="space-y-2">
           <h2 className="font-headline text-2xl font-black text-primary-container tracking-tighter uppercase leading-none">
-            Lab Parameters
+            What If Lab
           </h2>
           <div className="w-12 h-1 bg-primary-container" />
+          <p className="font-body text-xs text-outline/60 italic leading-tight mt-2">
+            What could you build if you spent this money on AI tokens instead?
+          </p>
         </div>
 
-        {/* AI Engine Architecture */}
+        {/* Item Context or Manual Input */}
         <div className="space-y-4">
-          <label className="font-label text-[10px] text-outline tracking-widest uppercase">
-            AI Engine Architecture
-          </label>
-          <div className="grid grid-cols-1 gap-2">
-            {engines.map((engine) => {
-              const isSelected = selectedEngine === engine.id
-              return (
-                <button
-                  key={engine.id}
-                  onClick={() => setSelectedEngine(engine.id)}
-                  className={cn(
-                    'group flex items-center justify-between p-3 text-left relative overflow-hidden transition-all',
-                    isSelected
-                      ? 'bg-surface-container-highest border border-primary-container/20'
-                      : 'bg-surface-container-lowest border border-outline-variant/20 hover:bg-surface-container-highest'
-                  )}
-                  style={{ clipPath: 'polygon(0 0, 90% 0, 100% 10%, 100% 100%, 0 100%)' }}
-                >
-                  <span
-                    className={cn(
-                      'font-headline font-bold text-xs transition-colors relative z-10',
-                      isSelected
-                        ? 'text-primary-container'
-                        : 'text-outline group-hover:text-primary-container'
-                    )}
-                  >
-                    {engine.name}
-                  </span>
-                  <div className="relative w-8 h-8 flex items-center justify-center">
-                    <span
-                      className={cn(
-                        'text-sm transition-transform relative z-10',
-                        isSelected
-                          ? 'text-primary-container'
-                          : 'text-outline group-hover:text-primary-container'
-                      )}
-                    >
-                      {engine.icon}
-                    </span>
-                  </div>
-                </button>
-              )
-            })}
-          </div>
+          {hasContext ? (
+            <>
+              <label className="font-label text-[10px] text-outline tracking-widest uppercase">
+                Last Conversion
+              </label>
+              <div
+                className="p-4 bg-surface-container-highest border border-primary-container/20 relative overflow-hidden"
+                style={{ clipPath: 'polygon(0 0, 90% 0, 100% 10%, 100% 100%, 0 100%)' }}
+              >
+                <div className="font-label text-[9px] text-outline uppercase tracking-widest mb-1">
+                  Item
+                </div>
+                <div className="font-headline font-bold text-on-surface text-sm uppercase tracking-tight mb-3">
+                  {itemName}
+                </div>
+                <div className="font-label text-[9px] text-outline uppercase tracking-widest mb-1">
+                  Price
+                </div>
+                <div className="font-headline font-bold text-accent text-2xl">
+                  {displayPrice}
+                </div>
+              </div>
+            </>
+          ) : (
+            <>
+              <label className="font-label text-[10px] text-outline tracking-widest uppercase">
+                Enter Dollar Amount
+              </label>
+              <div
+                className="relative"
+                style={{ clipPath: 'polygon(0 0, 90% 0, 100% 10%, 100% 100%, 0 100%)' }}
+              >
+                <div className="absolute left-3 top-1/2 -translate-y-1/2 font-headline font-bold text-outline text-lg">
+                  $
+                </div>
+                <input
+                  type="number"
+                  min="0"
+                  step="0.01"
+                  value={manualPrice}
+                  onChange={(e) => onManualPriceChange(e.target.value)}
+                  className="w-full bg-surface-container-highest border border-outline-variant/20 pl-8 pr-4 py-4 font-headline text-lg text-primary-container focus:outline-none focus:border-primary-container/40 transition-colors"
+                  placeholder="0.00"
+                />
+              </div>
+              <p className="font-label text-[9px] text-outline/40 italic">
+                Or convert an item on the home page first for full context.
+              </p>
+            </>
+          )}
         </div>
 
-        {/* Token Fuel Allocation */}
-        <div className="space-y-4">
-          <div className="flex justify-between items-end">
-            <label className="font-label text-[10px] text-outline tracking-widest uppercase">
-              Token Fuel Allocation
-            </label>
-            <span className="font-headline font-bold text-primary-container text-sm">
-              {fuelDisplay}
-            </span>
+        {/* Scenario count */}
+        {scenarioCount > 0 && (
+          <div className="space-y-2">
+            <div className="flex justify-between items-end">
+              <label className="font-label text-[10px] text-outline tracking-widest uppercase">
+                Scenarios Generated
+              </label>
+              <span className="font-headline font-bold text-secondary text-sm">
+                {scenarioCount}
+              </span>
+            </div>
+            <div className="h-1 bg-outline-variant/20 overflow-hidden">
+              <div
+                className="h-full bg-secondary transition-all duration-500"
+                style={{ width: `${Math.min(scenarioCount * 20, 100)}%` }}
+              />
+            </div>
           </div>
-          <div className="relative h-6 flex items-center">
-            <div
-              className="absolute inset-0 bg-surface-container-lowest border border-outline-variant/20"
-              style={{ clipPath: 'polygon(0 0, 100% 0, 100% 100%, 10% 100%, 0 90%)' }}
-            />
-            <div
-              className="absolute left-0 top-0 bottom-0 bg-primary-container/20 border-r-2 border-primary-container"
-              style={{ width: `${fuelValue}%` }}
-            />
-            <input
-              type="range"
-              min="0"
-              max="100"
-              value={fuelValue}
-              onChange={(e) => setFuelValue(Number(e.target.value))}
-              className="w-full h-full opacity-0 cursor-pointer z-10 relative"
-            />
-          </div>
-        </div>
+        )}
 
-        {/* RUN SIMULATION button */}
+        {/* GENERATE SCENARIO button */}
         <div className="mt-auto space-y-4">
           <button
-            onClick={onRunSimulation}
-            className="w-full bg-accent text-surface font-headline font-bold py-4 text-xs tracking-widest uppercase hover:bg-accent/90 transition-colors shadow-[0_0_15px_rgba(255,70,85,0.3)] relative overflow-hidden"
+            onClick={onRunScenario}
+            disabled={isLoading}
+            className={cn(
+              'w-full bg-accent text-surface font-headline font-bold py-4 text-xs tracking-widest uppercase transition-colors shadow-[0_0_15px_rgba(255,70,85,0.3)] relative overflow-hidden',
+              isLoading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-accent/90'
+            )}
             style={{ clipPath: 'polygon(0% 0%, 100% 0%, 100% 100%, 10% 100%, 0% 90%)' }}
           >
-            <span className="relative z-10">RUN SIMULATION</span>
+            <span className="relative z-10">
+              {isLoading ? 'GENERATING...' : 'GENERATE SCENARIO'}
+            </span>
           </button>
           <div className="font-label text-[8px] text-outline/30 text-center uppercase tracking-widest">
-            VERIFYING_HEXTECH_STABILITY...
+            AI-POWERED OPPORTUNITY ANALYSIS
           </div>
         </div>
       </div>

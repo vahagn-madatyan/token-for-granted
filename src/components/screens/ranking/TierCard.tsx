@@ -1,14 +1,9 @@
 import { cn } from '~/lib/cn'
+import type { ValuationResult } from '~/core/types'
+import { formatTokenCount, getBestValueProvider } from '~/core/token-pricing'
 
 interface TierCardProps {
-  tier: 'S' | 'A' | 'B' | 'C'
-  name: string
-  description: string
-  densityScore: number
-  imageUrl: string
-  imageAlt: string
-  tierLabel: string
-  tierCategory: string
+  valuation: ValuationResult
 }
 
 const tierColors = {
@@ -70,17 +65,34 @@ const tierColors = {
   },
 }
 
-export function TierCard({
-  tier,
-  name,
-  description,
-  densityScore,
-  imageUrl,
-  imageAlt,
-  tierLabel,
-  tierCategory,
-}: TierCardProps) {
+export function TierCard({ valuation }: TierCardProps) {
+  const tier = valuation.tier ?? 'C'
   const colors = tierColors[tier]
+
+  const itemName = valuation.item_name ?? 'Unknown Item'
+  const itemPrice = valuation.item_price ?? 0
+  const priceConfidence = valuation.price_confidence ?? 0
+
+  // Get the top action from what_you_could_do
+  const topAction =
+    valuation.what_you_could_do && valuation.what_you_could_do.length > 0
+      ? valuation.what_you_could_do[0].action
+      : 'Convert to AI tokens'
+
+  // Get best token value
+  let bestTokenStr = ''
+  if (valuation.token_conversions && valuation.token_conversions.length > 0) {
+    const bestValue = getBestValueProvider(valuation.token_conversions)
+    bestTokenStr = formatTokenCount(bestValue.tokens_you_get_input) + ' tokens'
+  }
+
+  // Tier label mapping
+  const tierLabels: Record<string, string> = {
+    S: 'HIGH_VALUE',
+    A: 'PREMIUM',
+    B: 'STANDARD',
+    C: 'ENTRY_LEVEL',
+  }
 
   return (
     <div className="relative group">
@@ -103,7 +115,7 @@ export function TierCard({
         )}
       >
         {/* Top row: Tier letter + label */}
-        <div className="flex justify-between items-start mb-8">
+        <div className="flex justify-between items-start mb-6">
           <div
             className={cn(
               'w-14 h-14 flex items-center justify-center border-4 font-headline text-4xl font-black italic',
@@ -122,53 +134,52 @@ export function TierCard({
                 colors.bgBorderFaded
               )}
             >
-              {tierLabel}
+              {tierLabels[tier] ?? 'UNKNOWN'}
             </span>
             <span className="text-[9px] font-label text-outline/50 uppercase">
-              {tierCategory}
+              {valuation.category}
             </span>
           </div>
         </div>
 
-        {/* Image area */}
-        <div className="mb-10 h-56 relative overflow-hidden bg-surface-container-highest clipped-tr border border-transparent group-hover:border-primary-container/50 transition-all">
-          <img
-            className="w-full h-full object-cover mix-blend-luminosity group-hover:mix-blend-normal transition-all duration-1000 grayscale group-hover:grayscale-0 scale-110 group-hover:scale-100"
-            src={imageUrl}
-            alt={imageAlt}
-          />
-          <div className="absolute inset-0 bg-gradient-to-t from-[#121c27] to-transparent opacity-80 group-hover:opacity-40 transition-opacity" />
+        {/* Price display */}
+        <div className="mb-4">
+          <div className={cn('text-4xl font-headline font-black', colors.text)}>
+            ${itemPrice.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+          </div>
+          {bestTokenStr && (
+            <div className="font-label text-xs text-primary-container/60 mt-1">
+              = {bestTokenStr}
+            </div>
+          )}
         </div>
 
         {/* Title */}
-        <h3
-          className={cn(
-            'font-headline text-3xl font-black mb-3 uppercase tracking-tighter cursor-default',
-            colors.text
-          )}
-        >
-          {name}
+        <h3 className="font-headline text-2xl font-black mb-3 uppercase tracking-tighter cursor-default text-on-surface">
+          {itemName}
         </h3>
 
-        {/* Description */}
-        <p className="font-body text-on-surface-variant text-base mb-8 flex-grow leading-snug italic">
-          {description}
+        {/* Top action as subtitle */}
+        <p className="font-body text-on-surface-variant text-sm mb-6 flex-grow leading-snug italic">
+          Instead: {topAction}
         </p>
 
-        {/* Bottom: Density Score */}
-        <div className={cn('flex justify-between items-end border-t pt-6', colors.borderAccent)}>
-          <div>
-            <div className="text-[10px] font-label uppercase text-outline tracking-widest mb-1">
-              Density Score
+        {/* Bottom: Confidence score as progress */}
+        <div className={cn('flex flex-col gap-2 border-t pt-4', colors.borderAccent)}>
+          <div className="flex justify-between items-center">
+            <div className="text-[10px] font-label uppercase text-outline tracking-widest">
+              Price Confidence
             </div>
-            <div className={cn('text-3xl font-headline font-black', colors.text)}>
-              {densityScore}
-              {tier === 'S' && (
-                <span className="text-xs ml-1 opacity-50 font-normal">MAX</span>
-              )}
+            <div className={cn('text-sm font-headline font-bold', colors.text)}>
+              {Math.round(priceConfidence)}%
             </div>
           </div>
-          <div className={cn('w-12 h-px mb-4', colors.lineAccent)} />
+          <div className="h-1 bg-outline-variant/20 overflow-hidden">
+            <div
+              className={cn('h-full transition-all duration-700', colors.bg)}
+              style={{ width: `${priceConfidence}%` }}
+            />
+          </div>
         </div>
       </div>
     </div>

@@ -31,6 +31,10 @@ function Home() {
     setIsSubmitting(true)
     try {
       const result = await createValuation({ data: { description, category } })
+      // Store last search for What If Lab context
+      if (typeof window !== 'undefined') {
+        sessionStorage.setItem('lastSearch', JSON.stringify({ itemName: description, itemPrice: 0 }))
+      }
       navigate({ to: '/valuation/$assetId', params: { assetId: result.id } })
     } catch (error) {
       console.error('Valuation failed:', error)
@@ -62,13 +66,13 @@ function Home() {
           {/* Title block */}
           <div className="text-center mb-8">
             <h1 className="font-headline font-black text-5xl md:text-7xl uppercase tracking-tighter leading-none mb-2 text-on-surface text-glitch-hover cursor-default">
-              TACTICAL{' '}
-              <span className="text-primary-container">ENTRY</span>{' '}
+              TOKEN{' '}
+              <span className="text-primary-container">CONVERSION</span>{' '}
               PROTOCOL
             </h1>
             <p className="font-body italic text-lg text-outline max-w-md mx-auto">
-              Harmonizing asset valuation through the Arcana lens. Submit the
-              subject for extraction.
+              Every dollar spent is AI tokens lost. Find out what you're
+              really giving up.
             </p>
           </div>
 
@@ -82,7 +86,7 @@ function Home() {
               icon={
                 <span className="animate-pulse text-xl">&#x25C6;</span>
               }
-              placeholder="Enter asset description..."
+              placeholder="What do you want to buy?"
               value={description}
               onChange={(e) => setDescription(e.target.value)}
               onKeyDown={(e) => {
@@ -104,7 +108,7 @@ function Home() {
               onClick={handleSubmit}
               disabled={isSubmitting}
             >
-              {isSubmitting ? 'PROCESSING...' : 'INITIATE PROTOCOL'}
+              {isSubmitting ? 'PROCESSING...' : 'CONVERT TO TOKENS'}
               <span className="text-2xl">&#x26A1;</span>
             </NeonButton>
           </div>
@@ -136,7 +140,7 @@ function Home() {
                   PROCESSING...
                 </div>
                 <div className="font-label text-[10px] text-outline uppercase tracking-widest">
-                  ARCANA ENGINE ANALYZING ASSET
+                  CALCULATING TOKEN POTENTIAL...
                 </div>
               </HexCard>
             </motion.div>
@@ -147,7 +151,7 @@ function Home() {
       {/* Background watermark */}
       <div className="fixed bottom-0 left-0 p-12 pointer-events-none select-none z-0">
         <h2 className="font-headline font-black text-[12vw] leading-none text-on-surface/[0.05] uppercase tracking-tighter mix-blend-overlay">
-          ENTRY_PRTCL
+          TOKEN_CONV
         </h2>
       </div>
     </>

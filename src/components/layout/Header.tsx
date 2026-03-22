@@ -1,10 +1,10 @@
 import { Link, useRouterState } from '@tanstack/react-router'
 
 const navLinks = [
-  { to: '/' as const, label: 'PROTOCOL: ACTIVE' },
-  { to: '/ranking' as const, label: 'VALUE MATRIX' },
+  { to: '/' as const, label: 'CONVERT' },
+  { to: '/ranking' as const, label: 'LEADERBOARD' },
   { to: '/what-if' as const, label: 'WHAT IF LAB' },
-  { to: '/terminal' as const, label: 'TERMINAL' },
+  { to: '/terminal' as const, label: 'LIVE FEED' },
 ]
 
 export function Header() {

@@ -6,10 +6,11 @@ interface CategorySelectProps {
 }
 
 const categories: AssetCategory[] = [
-  'collectible',
-  'art',
-  'tech',
-  'luxury',
+  'electronics',
+  'collectibles',
+  'fashion',
+  'entertainment',
+  'food',
   'other',
 ]
 

@@ -37,7 +37,7 @@ function SystemHealthCard() {
         {/* Processor Load */}
         <div>
           <div className="flex justify-between font-label text-[10px] text-outline mb-1 uppercase">
-            <span>Processor Load</span>
+            <span>Conversion Engine</span>
             <span>{processorLoad}%</span>
           </div>
           <div className="h-1 bg-outline-variant/20 overflow-hidden relative">
@@ -54,7 +54,7 @@ function SystemHealthCard() {
         {/* Aether Consumption */}
         <div>
           <div className="flex justify-between font-label text-[10px] text-outline mb-1 uppercase">
-            <span>Aether Consumption</span>
+            <span>Token Throughput</span>
             <span>{aetherConsumption}%</span>
           </div>
           <div className="h-1 bg-outline-variant/20 overflow-hidden relative">
@@ -70,7 +70,7 @@ function SystemHealthCard() {
 
         <div className="pt-2 border-t border-outline-variant/10">
           <p className="font-label text-[10px] text-outline/60 italic leading-tight">
-            All systems operational within optimal arcane parameters.
+            All systems operational. Token conversion pipeline active.
           </p>
         </div>
       </div>
@@ -106,13 +106,13 @@ function TokenLatencyCard() {
   return (
     <div className="bg-surface-container-low border border-outline-variant/20 p-5 relative overflow-hidden">
       <h3 className="font-headline text-xs font-bold text-secondary mb-4 tracking-widest uppercase flex items-center gap-2">
-        <span className="w-1.5 h-1.5 bg-secondary" /> Token Latency
+        <span className="w-1.5 h-1.5 bg-secondary" /> Provider Latency
       </h3>
 
       <div className="grid grid-cols-2 gap-3">
         <div className="bg-surface-container-highest p-3 border-l-2 border-primary-container">
           <span className="block font-label text-[9px] text-outline uppercase mb-1">
-            ARC_NET
+            API_NET
           </span>
           <span className="block font-headline text-xl font-bold text-primary-container">
             {String(arcNet).padStart(2, '0')}
@@ -122,7 +122,7 @@ function TokenLatencyCard() {
 
         <div className="bg-surface-container-highest p-3 border-l-2 border-primary-container">
           <span className="block font-label text-[9px] text-outline uppercase mb-1">
-            VAL_FEED
+            CONV_FEED
           </span>
           <span className="block font-headline text-xl font-bold text-primary-container">
             {String(valFeed).padStart(2, '0')}
@@ -132,7 +132,7 @@ function TokenLatencyCard() {
 
         <div className="col-span-2 bg-surface-container-highest p-3 border-l-2 border-accent/50">
           <span className="block font-label text-[9px] text-outline uppercase mb-1">
-            GLOBAL_REACH
+            PROVIDER_AVG
           </span>
           <span className="block font-headline text-xl font-bold text-on-surface">
             {globalReach}
@@ -154,11 +154,11 @@ interface NodeEntry {
 }
 
 const NODES: NodeEntry[] = [
-  { name: 'PARIS-HUB-01', initialStatus: 'online' },
-  { name: 'SEOUL-LNK-04', initialStatus: 'online' },
-  { name: 'NYC-GATE-09', initialStatus: 'offline' },
-  { name: 'TKO-DATA-11', initialStatus: 'locked' },
-  { name: 'LND-STR-02', initialStatus: 'online' },
+  { name: 'OPENAI_NODE-01', initialStatus: 'online' },
+  { name: 'ANTHROPIC_NODE-02', initialStatus: 'online' },
+  { name: 'GOOGLE_NODE-03', initialStatus: 'offline' },
+  { name: 'META_NODE-04', initialStatus: 'locked' },
+  { name: 'MISTRAL_NODE-05', initialStatus: 'online' },
 ]
 
 const CYCLEABLE_STATUSES: NodeStatus[] = ['online', 'syncing', 'offline']
@@ -291,7 +291,7 @@ function NodeConnectionsCard() {
             <path d="M21 12a9 9 0 11-6.219-8.56" />
             <polyline points="21 3 21 9 15 9" />
           </svg>
-          Scan_For_Nodes
+          Scan_Providers
         </button>
       </div>
     </div>

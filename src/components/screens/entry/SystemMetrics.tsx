@@ -9,7 +9,7 @@ import { staggerContainer, fadeInUp } from '~/components/animations/variants'
  * All values hardcoded per design spec.
  */
 export function SystemMetrics() {
-  const liquidityValue = useCountUp(1.4, 2000)
+  const modelsValue = useCountUp(16, 2000)
 
   return (
     <motion.div
@@ -18,26 +18,26 @@ export function SystemMetrics() {
       initial="hidden"
       animate="visible"
     >
-      {/* Compute Power - uses MetricDisplay (single progress bar) */}
+      {/* Providers Tracked - uses MetricDisplay (single progress bar) */}
       <motion.div variants={fadeInUp}>
         <MetricDisplay
-          label="Compute Power"
-          value={84.2}
-          decimals={1}
-          suffix="T-FLOPS"
-          barValue={84}
+          label="PROVIDERS TRACKED"
+          value={8}
+          decimals={0}
+          suffix=""
+          barValue={80}
         />
       </motion.div>
 
-      {/* Token Liquidity - custom layout with segmented bars */}
+      {/* Models Indexed - custom layout with segmented bars */}
       <motion.div variants={fadeInUp}>
         <HexCard elevation="low" clip="tr" borderAccent="secondary">
           <div className="font-label text-[10px] text-outline mb-1 uppercase tracking-widest">
-            Token Liquidity
+            MODELS INDEXED
           </div>
           <div className="text-3xl font-headline font-black text-secondary">
-            {liquidityValue.toFixed(1)}M{' '}
-            <span className="text-sm font-normal text-on-surface/40">ARC</span>
+            {Math.round(modelsValue)}+{' '}
+            <span className="text-sm font-normal text-on-surface/40">LLMs</span>
           </div>
           <div className="mt-4 flex gap-1 h-3">
             <div className="flex-1 bg-secondary/40" />

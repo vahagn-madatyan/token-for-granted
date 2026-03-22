@@ -1,11 +1,16 @@
 import { useState, useRef, useEffect } from 'react'
 import { createFileRoute } from '@tanstack/react-router'
 import type { LogEntry } from '~/components/ui/TerminalLog'
-import { useBootSequence } from '~/components/screens/terminal/BootSequence'
+import { useBootSequence, valuationToLogEntry } from '~/components/screens/terminal/BootSequence'
 import { TerminalSidebar } from '~/components/screens/terminal/TerminalSidebar'
 import { SystemMonitor } from '~/components/screens/terminal/SystemMonitor'
+import { getRecentValuations } from '~/core/functions/valuation.functions'
 
 export const Route = createFileRoute('/terminal')({
+  loader: async () => {
+    const valuations = await getRecentValuations({ data: { limit: 20 } })
+    return { valuations }
+  },
   component: Terminal,
 })
 
@@ -18,9 +23,11 @@ const levelColor: Record<string, string> = {
 }
 
 function Terminal() {
-  const { entries, addEntry } = useBootSequence()
+  const { valuations } = Route.useLoaderData()
+  const { entries, isBooting, addEntry, addEntries } = useBootSequence()
   const [inputValue, setInputValue] = useState('')
   const scrollRef = useRef<HTMLDivElement>(null)
+  const hasLoadedRealData = useRef(false)
 
   // Auto-scroll to bottom as new entries appear
   useEffect(() => {
@@ -28,6 +35,74 @@ function Terminal() {
       scrollRef.current.scrollTop = scrollRef.current.scrollHeight
     }
   }, [entries.length])
+
+  // After boot sequence completes, show real entries from D1
+  useEffect(() => {
+    if (isBooting || hasLoadedRealData.current) return
+    hasLoadedRealData.current = true
+
+    // Filter to only completed valuations
+    const completedValuations = valuations.filter(
+      (v) => v.item_name && v.item_price != null
+    )
+
+    if (completedValuations.length > 0) {
+      // Add a separator entry
+      addEntry({
+        timestamp: new Date().toTimeString().slice(0, 8),
+        level: 'INFO',
+        source: 'FEED_SYNC',
+        message: `Loading ${completedValuations.length} recent conversion(s) from database...`,
+      })
+
+      // Stagger real entries to appear over time
+      completedValuations.forEach((valuation, i) => {
+        setTimeout(() => {
+          addEntry(valuationToLogEntry(valuation))
+        }, (i + 1) * 500)
+      })
+    } else {
+      addEntry({
+        timestamp: new Date().toTimeString().slice(0, 8),
+        level: 'INFO',
+        source: 'FEED_SYNC',
+        message: 'No conversions in database yet. Awaiting first submission...',
+      })
+    }
+  }, [isBooting, valuations, addEntry])
+
+  // Poll for new valuations every 15 seconds
+  useEffect(() => {
+    if (isBooting) return
+
+    const interval = setInterval(async () => {
+      try {
+        const fresh = await getRecentValuations({ data: { limit: 5 } })
+        const completed = fresh.filter(
+          (v) => v.item_name && v.item_price != null
+        )
+        if (completed.length > 0) {
+          // Check for entries we haven't seen yet by comparing IDs
+          const existingIds = new Set(
+            entries
+              .filter((e) => e.source === 'CONVERSION')
+              .map((e) => e.message)
+          )
+          const newEntries = completed.filter((v) => {
+            const logEntry = valuationToLogEntry(v)
+            return !existingIds.has(logEntry.message)
+          })
+          if (newEntries.length > 0) {
+            addEntries(newEntries.map(valuationToLogEntry))
+          }
+        }
+      } catch {
+        // Silently ignore poll failures
+      }
+    }, 15000)
+
+    return () => clearInterval(interval)
+  }, [isBooting, entries, addEntries])
 
   function handleCommand() {
     if (!inputValue.trim()) return
@@ -116,19 +191,19 @@ function Terminal() {
               />
               <div>
                 <h1 className="font-headline text-2xl font-bold tracking-tight text-on-surface uppercase italic">
-                  Command_Console.v01
+                  Live_Feed.v01
                 </h1>
                 <p className="font-label text-xs text-outline tracking-wider">
-                  SECURE LINK: ESTABLISHED // ENCRYPTION: ARCANE-AES-256
+                  TOKEN CONVERSION STREAM // ENCRYPTION: AES-256
                 </p>
               </div>
             </div>
             <div className="flex gap-2">
               <div className="px-3 py-1 bg-surface-container-high border-l-2 border-primary-container text-[10px] font-label text-primary-container uppercase tracking-widest">
-                Active_Node: PAR-09
+                Feed: LIVE
               </div>
               <div className="px-3 py-1 bg-accent/10 border-l-2 border-accent text-[10px] font-label text-accent uppercase tracking-widest">
-                Alerts: 02
+                Providers: 08
               </div>
             </div>
           </header>
@@ -141,10 +216,10 @@ function Terminal() {
                 'polygon(0 0, 92% 0, 100% 8%, 100% 100%, 0 100%)',
             }}
           >
-            {/* AI_CORE watermark */}
+            {/* Watermark */}
             <div className="absolute top-0 right-0 p-4 opacity-5 pointer-events-none select-none">
               <span className="font-headline text-8xl font-black">
-                AI_CORE
+                TOKEN_FEED
               </span>
             </div>
 

@@ -1,37 +1,39 @@
 import { env } from 'cloudflare:workers'
-import type { AIValuationResponse, AssetCategory } from '~/core/types'
+import type { AITokenAnalysisResponse, AssetCategory, Tier } from '~/core/types'
 import { computeCacheKey, getCachedValuation, setCachedValuation } from './cache.server'
 
-const VALUATION_SYSTEM_PROMPT = `You are the ARCANA Tactical Valuation Engine, a sophisticated AI system that analyzes assets and provides tactical market intelligence. You MUST respond with valid JSON only, no markdown or explanation outside the JSON.
+const TOKEN_ANALYSIS_SYSTEM_PROMPT = `You are the Token For Granted engine — an AI opportunity cost calculator. Given an item someone wants to buy, estimate its real-world USD price and generate concrete things they could do with AI tokens instead.
 
-Analyze the submitted asset and return a JSON object with these exact fields:
+You MUST respond with valid JSON only, no markdown or explanation outside the JSON.
+
+Return a JSON object with these exact fields:
 {
-  "current_value": number (estimated current USD value, be reasonable based on the asset type),
-  "projected_value": number (estimated value in 12 months, slightly higher than current),
-  "confidence": number (0-100, your confidence percentage in this valuation),
-  "growth_rate": number (percentage growth rate, e.g. 12.4 for 12.4%),
-  "tier": "S" | "A" | "B" | "C" (S=exceptional, A=high value, B=moderate, C=standard),
-  "density_score": number (0-100, a tactical density metric),
-  "analysis": string (2-3 sentence tactical analysis of the asset),
-  "multiplier_categories": [
-    { "name": string, "relevance": number (0-100), "description": string }
-  ] (exactly 3 categories relevant to this asset),
-  "asset_name": string (short tactical codename for the asset, UPPERCASE),
-  "asset_code": string (format: XXX-99-YYY, tactical identifier),
-  "art_edition": string (e.g. "1ST EDITION // HOLO_GEN_01")
+  "item_name": string (cleaned-up item name, title case, e.g. "Pokemon Charizard Holo 1st Edition"),
+  "item_price": number (estimated real USD price — be accurate based on real market data),
+  "price_confidence": number (0-100, how confident you are in the price estimate),
+  "tier": "S" | "A" | "B" | "C" (S = over $5000, A = over $1000, B = over $200, C = $200 or less),
+  "what_you_could_do": [
+    { "action": string (short title, e.g. "Build 10 full-stack apps"), "description": string (1-2 sentences explaining what this means concretely), "icon_hint": string (one of: code, chat, image, music, data, robot, book, game) }
+  ] (exactly 3-4 items — concrete things someone could BUILD or DO if they spent that money on AI tokens instead),
+  "analysis": string (1-2 sentence punchy comparison, e.g. "That Pokemon card sits in a sleeve. Those tokens could build your next startup.")
 }
 
-Base your valuation on reasonable real-world logic. The asset category is: {category}.`
+Guidelines for price estimation:
+- Use real-world market prices. A base model iPhone is ~$800, a PS5 is ~$500, a vintage Pokemon card varies widely.
+- For vague items, estimate a typical/average example.
+- The what_you_could_do items should be CONCRETE and COMPELLING — make the person feel the opportunity cost.
+
+The item category is: {category}.`
 
 /**
- * Generate a valuation for a given asset description and category.
- * Uses 3-tier fallback: primary AI model -> fallback model -> deterministic mock.
+ * Generate a token analysis for a given item description and category.
+ * Uses 3-tier fallback: Llama -> Mistral -> deterministic.
  * Results are cached in KV with 1-hour TTL.
  */
-export async function generateValuation(
+export async function generateTokenAnalysis(
   description: string,
   category: AssetCategory
-): Promise<AIValuationResponse> {
+): Promise<AITokenAnalysisResponse> {
   // 1. Check KV cache
   const cacheKey = await computeCacheKey(description, category)
   const cached = await getCachedValuation(cacheKey)
@@ -39,15 +41,15 @@ export async function generateValuation(
     return cached
   }
 
-  const systemPrompt = VALUATION_SYSTEM_PROMPT.replace('{category}', category)
+  const systemPrompt = TOKEN_ANALYSIS_SYSTEM_PROMPT.replace('{category}', category)
   const messages = [
     { role: 'system' as const, content: systemPrompt },
-    { role: 'user' as const, content: `Analyze this ${category} asset: ${description}` },
+    { role: 'user' as const, content: `I want to buy: ${description}` },
   ]
 
-  let result: AIValuationResponse | null = null
+  let result: AITokenAnalysisResponse | null = null
 
-  // 2. Try primary model
+  // 2. Try primary model (Llama)
   try {
     const response = await env.AI.run(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -67,7 +69,7 @@ export async function generateValuation(
     // Primary model failed, try fallback
   }
 
-  // 3. Try fallback model if primary failed
+  // 3. Try fallback model (Mistral)
   if (!result) {
     try {
       const response = await env.AI.run(
@@ -101,10 +103,10 @@ export async function generateValuation(
 }
 
 /**
- * Attempt to parse an AI text response as a valid AIValuationResponse JSON object.
+ * Attempt to parse an AI text response as a valid AITokenAnalysisResponse JSON object.
  * Returns null if parsing fails.
  */
-function parseAIResponse(text: string): AIValuationResponse | null {
+function parseAIResponse(text: string): AITokenAnalysisResponse | null {
   try {
     // Try to extract JSON from the response (may be wrapped in markdown code blocks)
     const jsonMatch = text.match(/\{[\s\S]*\}/)
@@ -114,29 +116,27 @@ function parseAIResponse(text: string): AIValuationResponse | null {
 
     // Validate required fields exist
     if (
-      typeof parsed.current_value !== 'number' ||
-      typeof parsed.projected_value !== 'number' ||
-      typeof parsed.confidence !== 'number' ||
+      typeof parsed.item_name !== 'string' ||
+      typeof parsed.item_price !== 'number' ||
+      typeof parsed.price_confidence !== 'number' ||
       typeof parsed.tier !== 'string' ||
-      !['S', 'A', 'B', 'C'].includes(parsed.tier)
+      !['S', 'A', 'B', 'C'].includes(parsed.tier) ||
+      !Array.isArray(parsed.what_you_could_do)
     ) {
       return null
     }
 
     return {
-      current_value: parsed.current_value,
-      projected_value: parsed.projected_value,
-      confidence: parsed.confidence,
-      growth_rate: parsed.growth_rate ?? 0,
-      tier: parsed.tier,
-      density_score: parsed.density_score ?? 50,
-      analysis: parsed.analysis ?? 'Tactical analysis pending.',
-      multiplier_categories: Array.isArray(parsed.multiplier_categories)
-        ? parsed.multiplier_categories.slice(0, 3)
-        : [],
-      asset_name: parsed.asset_name ?? 'UNKNOWN',
-      asset_code: parsed.asset_code ?? 'UNK-00-XXX',
-      art_edition: parsed.art_edition ?? '1ST EDITION // GEN_01',
+      item_name: parsed.item_name,
+      item_price: parsed.item_price,
+      price_confidence: Math.min(100, Math.max(0, parsed.price_confidence)),
+      tier: parsed.tier as Tier,
+      what_you_could_do: parsed.what_you_could_do.slice(0, 4).map((item: Record<string, unknown>) => ({
+        action: String(item.action ?? 'Use AI tokens'),
+        description: String(item.description ?? 'Spend tokens on AI services instead.'),
+        icon_hint: String(item.icon_hint ?? 'robot'),
+      })),
+      analysis: parsed.analysis ?? 'That money could go a lot further as AI tokens.',
     }
   } catch {
     return null
@@ -144,13 +144,13 @@ function parseAIResponse(text: string): AIValuationResponse | null {
 }
 
 /**
- * Generate deterministic but plausible valuation data from input hash.
+ * Generate deterministic but plausible token analysis from input hash.
  * Used as last-resort fallback when both AI models fail to produce valid JSON.
  */
 export function generateDeterministicFallback(
   description: string,
   category: AssetCategory
-): AIValuationResponse {
+): AITokenAnalysisResponse {
   // Simple string hash
   let hash = 0
   const input = description + category
@@ -160,74 +160,76 @@ export function generateDeterministicFallback(
   }
   hash = Math.abs(hash)
 
-  const currentValue = 500 + (hash % 9500)
-  const projectedValue = Math.round(currentValue * (1.05 + (hash % 30) / 100))
-  const confidence = 60 + (hash % 35)
-  const densityScore = 40 + (hash % 55)
-  const growthRate = 5 + (hash % 20)
+  // Category-based price ranges for plausible estimates
+  const priceRanges: Record<AssetCategory, [number, number]> = {
+    electronics: [200, 2000],
+    collectibles: [50, 5000],
+    fashion: [30, 3000],
+    entertainment: [10, 500],
+    food: [5, 200],
+    other: [20, 1000],
+  }
 
-  let tier: 'S' | 'A' | 'B' | 'C'
-  if (currentValue > 7000) tier = 'S'
-  else if (currentValue > 4000) tier = 'A'
-  else if (currentValue > 2000) tier = 'B'
+  const [minPrice, maxPrice] = priceRanges[category]
+  const itemPrice = minPrice + (hash % (maxPrice - minPrice))
+  const priceConfidence = 55 + (hash % 35)
+
+  let tier: Tier
+  if (itemPrice > 5000) tier = 'S'
+  else if (itemPrice > 1000) tier = 'A'
+  else if (itemPrice > 200) tier = 'B'
   else tier = 'C'
 
-  const firstWord = description.split(/\s+/)[0]?.toUpperCase() ?? 'ASSET'
-  const assetName = firstWord.slice(0, 12)
-  const codeDigits = String(hash % 10000).padStart(4, '0')
-  const assetCode = `${category.slice(0, 3).toUpperCase()}-${codeDigits.slice(0, 2)}-${codeDigits.slice(2, 4)}X`
+  // Clean up item name from description
+  const itemName = description
+    .split(/\s+/)
+    .slice(0, 5)
+    .map(w => w.charAt(0).toUpperCase() + w.slice(1).toLowerCase())
+    .join(' ')
 
-  const categoryMultipliers: Record<AssetCategory, AIValuationResponse['multiplier_categories']> = {
-    collectible: [
-      { name: 'Rarity Factor', relevance: 70 + (hash % 25), description: 'Scarcity-driven demand amplifier for limited editions' },
-      { name: 'Cultural Impact', relevance: 50 + (hash % 40), description: 'Historical and cultural significance multiplier' },
-      { name: 'Condition Index', relevance: 60 + (hash % 30), description: 'Preservation state relative to mint condition' },
+  const categoryActions: Record<AssetCategory, AITokenAnalysisResponse['what_you_could_do']> = {
+    electronics: [
+      { action: 'Build a personal AI assistant', description: 'Enough tokens to create a custom chatbot that knows your workflow, answers questions, and automates daily tasks for months.', icon_hint: 'robot' },
+      { action: 'Generate an entire app codebase', description: 'Use AI to architect, write, and debug a full-stack web application from scratch — frontend, backend, and database.', icon_hint: 'code' },
+      { action: 'Analyze thousands of documents', description: 'Process and summarize your entire document library, extracting key insights and building a searchable knowledge base.', icon_hint: 'data' },
     ],
-    art: [
-      { name: 'Provenance Chain', relevance: 65 + (hash % 30), description: 'Verified ownership history and authenticity trail' },
-      { name: 'Artist Momentum', relevance: 55 + (hash % 35), description: 'Creator market trajectory and gallery presence' },
-      { name: 'Medium Scarcity', relevance: 45 + (hash % 40), description: 'Material and technique rarity assessment' },
+    collectibles: [
+      { action: 'Create an AI-powered game', description: 'Design, build, and iterate on a game with AI-generated art, dialogue, and procedural content — more fun than any card in a sleeve.', icon_hint: 'game' },
+      { action: 'Write and illustrate a book', description: 'Generate a complete novel with AI-assisted writing and create illustrations for every chapter.', icon_hint: 'book' },
+      { action: 'Launch a side business', description: 'Use AI to research markets, generate business plans, create marketing copy, and build a landing page for your startup idea.', icon_hint: 'robot' },
     ],
-    tech: [
-      { name: 'Innovation Index', relevance: 70 + (hash % 25), description: 'Technological advancement and disruption potential' },
-      { name: 'Adoption Curve', relevance: 60 + (hash % 30), description: 'Market penetration and user growth trajectory' },
-      { name: 'Ecosystem Lock-in', relevance: 50 + (hash % 35), description: 'Platform dependency and switching cost factor' },
+    fashion: [
+      { action: 'Build a personal style AI', description: 'Train a model on your wardrobe and get daily outfit recommendations, trend analysis, and sustainable fashion suggestions.', icon_hint: 'image' },
+      { action: 'Generate a clothing line', description: 'Design an entire fashion collection with AI — patterns, colorways, marketing materials, and product descriptions.', icon_hint: 'image' },
+      { action: 'Create a fashion blog empire', description: 'Generate months of high-quality fashion content, social media posts, and SEO-optimized articles with AI assistance.', icon_hint: 'book' },
     ],
-    luxury: [
-      { name: 'Brand Prestige', relevance: 75 + (hash % 20), description: 'Heritage brand recognition and exclusivity tier' },
-      { name: 'Craftsmanship Score', relevance: 65 + (hash % 25), description: 'Artisanal quality and manufacturing precision' },
-      { name: 'Resale Velocity', relevance: 55 + (hash % 30), description: 'Secondary market liquidity and demand persistence' },
+    entertainment: [
+      { action: 'Compose an album of music', description: 'Use AI to help write lyrics, generate melodies, arrange songs, and produce an entire album of original music.', icon_hint: 'music' },
+      { action: 'Script a short film series', description: 'Write, storyboard, and plan a multi-episode series with AI-generated dialogue, scene descriptions, and shot lists.', icon_hint: 'chat' },
+      { action: 'Build an interactive story app', description: 'Create a choose-your-own-adventure app with AI-generated narratives that adapt to player choices in real time.', icon_hint: 'game' },
+    ],
+    food: [
+      { action: 'Create a personal recipe AI', description: 'Build a custom chef assistant that generates recipes based on your dietary needs, available ingredients, and taste preferences.', icon_hint: 'chat' },
+      { action: 'Plan a year of meal preps', description: 'Generate 365 days of nutritionally balanced meal plans with shopping lists, prep instructions, and cost breakdowns.', icon_hint: 'data' },
+      { action: 'Write a cookbook', description: 'Use AI to develop, test, and write an entire cookbook with original recipes, food photography descriptions, and nutritional analysis.', icon_hint: 'book' },
     ],
     other: [
-      { name: 'Market Demand', relevance: 60 + (hash % 30), description: 'Current buyer interest and acquisition activity' },
-      { name: 'Uniqueness Factor', relevance: 50 + (hash % 35), description: 'Distinctive attributes relative to comparable assets' },
-      { name: 'Utility Score', relevance: 45 + (hash % 40), description: 'Functional value and practical application potential' },
+      { action: 'Build a research assistant', description: 'Create an AI-powered tool that reads papers, summarizes findings, and helps you stay on top of any field of knowledge.', icon_hint: 'data' },
+      { action: 'Automate your workflows', description: 'Use AI tokens to build custom automation scripts, process emails, generate reports, and handle repetitive tasks.', icon_hint: 'robot' },
+      { action: 'Learn a new skill with AI tutoring', description: 'Get thousands of personalized tutoring sessions on any topic — programming, languages, math, music, or anything else.', icon_hint: 'book' },
     ],
   }
 
-  const artEditions: Record<AssetCategory, string> = {
-    collectible: '1ST EDITION // MINT_SEALED',
-    art: '1ST EDITION // GALLERY_PROOF',
-    tech: '1ST EDITION // PROTO_GEN_01',
-    luxury: '1ST EDITION // ATELIER_PRIME',
-    other: '1ST EDITION // HOLO_GEN_01',
-  }
-
-  const descriptionExcerpt = description.length > 50
-    ? description.slice(0, 50) + '...'
+  const descriptionExcerpt = description.length > 40
+    ? description.slice(0, 40) + '...'
     : description
 
   return {
-    current_value: currentValue,
-    projected_value: projectedValue,
-    confidence,
-    growth_rate: growthRate,
+    item_name: itemName,
+    item_price: itemPrice,
+    price_confidence: priceConfidence,
     tier,
-    density_score: densityScore,
-    analysis: `Tactical analysis of ${category} asset "${descriptionExcerpt}" indicates ${tier}-tier classification with ${confidence}% confidence. Growth trajectory projected at ${growthRate}% over the next 12-month cycle.`,
-    multiplier_categories: categoryMultipliers[category],
-    asset_name: assetName,
-    asset_code: assetCode,
-    art_edition: artEditions[category],
+    what_you_could_do: categoryActions[category],
+    analysis: `That ${descriptionExcerpt} costs ~$${itemPrice}. Instead, you could mass-produce AI-powered projects that actually grow in value over time.`,
   }
 }

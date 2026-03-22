@@ -33,56 +33,44 @@ export async function getValuationById(
 }
 
 /**
- * Update a valuation row with AI response data.
+ * Update a valuation row with token analysis results.
  * Sets auth_status to 'VERIFIED' and updates updated_at.
  */
 export async function updateValuationWithAI(
   id: string,
   aiData: {
-    current_value: number
-    projected_value: number
-    confidence: number
-    growth_rate: number
+    item_name: string
+    item_price: number
+    price_confidence: number
     tier: string
-    density_score: number
-    asset_code: string
-    asset_name: string
-    art_edition: string
+    token_conversions: string
+    what_you_could_do: string
     analysis: string
-    multiplier_categories: string
     ai_raw_response: string
   }
 ): Promise<void> {
   await env.DB.prepare(
     `UPDATE valuations SET
-      current_value = ?,
-      projected_value = ?,
-      confidence = ?,
-      growth_rate = ?,
+      item_name = ?,
+      item_price = ?,
+      price_confidence = ?,
       tier = ?,
-      density_score = ?,
-      asset_code = ?,
-      asset_name = ?,
-      art_edition = ?,
+      token_conversions = ?,
+      what_you_could_do = ?,
       analysis = ?,
-      multiplier_categories = ?,
       ai_raw_response = ?,
       auth_status = 'VERIFIED',
       updated_at = datetime('now')
     WHERE id = ?`
   )
     .bind(
-      aiData.current_value,
-      aiData.projected_value,
-      aiData.confidence,
-      aiData.growth_rate,
+      aiData.item_name,
+      aiData.item_price,
+      aiData.price_confidence,
       aiData.tier,
-      aiData.density_score,
-      aiData.asset_code,
-      aiData.asset_name,
-      aiData.art_edition,
+      aiData.token_conversions,
+      aiData.what_you_could_do,
       aiData.analysis,
-      aiData.multiplier_categories,
       aiData.ai_raw_response,
       id
     )
@@ -90,11 +78,36 @@ export async function updateValuationWithAI(
 }
 
 /**
- * List all valuations ordered by created_at DESC, limited to 50.
+ * List valuations with optional sorting.
+ * sortBy: 'price' = ORDER BY item_price DESC, 'date' (default) = ORDER BY created_at DESC
  */
-export async function listValuations(): Promise<Valuation[]> {
+export async function listValuations(
+  sortBy: 'price' | 'date' = 'date',
+  limit: number = 50
+): Promise<Valuation[]> {
+  const orderClause = sortBy === 'price'
+    ? 'ORDER BY item_price DESC NULLS LAST'
+    : 'ORDER BY created_at DESC'
+
   const result = await env.DB.prepare(
-    `SELECT * FROM valuations ORDER BY created_at DESC LIMIT 50`
-  ).all<Valuation>()
+    `SELECT * FROM valuations WHERE auth_status = 'VERIFIED' ${orderClause} LIMIT ?`
+  )
+    .bind(limit)
+    .all<Valuation>()
+  return result.results
+}
+
+/**
+ * Get recent valuations for the terminal live feed.
+ * Returns the most recent verified valuations.
+ */
+export async function getRecentValuations(
+  limit: number = 20
+): Promise<Valuation[]> {
+  const result = await env.DB.prepare(
+    `SELECT * FROM valuations WHERE auth_status = 'VERIFIED' ORDER BY created_at DESC LIMIT ?`
+  )
+    .bind(limit)
+    .all<Valuation>()
   return result.results
 }

@@ -12,20 +12,20 @@ export function SystemAssets() {
 
       <div className="relative z-10">
         <div className="font-label text-[10px] text-outline mb-4 uppercase tracking-widest">
-          System Assets
+          Token Intel
         </div>
         <div className="space-y-3">
           <div className="flex justify-between items-center text-xs">
             <span className="text-on-surface-variant font-medium">
-              RARE_ASSET_1
+              AVG_TOKEN_COST
             </span>
-            <span className="text-secondary font-bold">+2.4%</span>
+            <span className="text-secondary font-bold">$0.50/M</span>
           </div>
           <div className="flex justify-between items-center text-xs">
             <span className="text-on-surface-variant font-medium">
-              CORE_TOKEN
+              BEST_VALUE
             </span>
-            <span className="text-primary-container font-bold">STABLE</span>
+            <span className="text-primary-container font-bold">Gemini Flash</span>
           </div>
         </div>
       </div>
