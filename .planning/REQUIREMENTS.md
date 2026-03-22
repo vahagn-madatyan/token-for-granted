@@ -97,10 +97,10 @@
 
 ### Deploy & Polish
 
-- [ ] **DEPL-01**: Page transitions with AnimatePresence (fade + Y-translate)
-- [ ] **DEPL-02**: Responsive design across desktop and tablet viewports
-- [ ] **DEPL-03**: Loading states for AI-powered interactions
-- [ ] **DEPL-04**: Error boundaries with tactical-themed error display
+- [x] **DEPL-01**: Page transitions with AnimatePresence (fade + Y-translate)
+- [x] **DEPL-02**: Responsive design across desktop and tablet viewports
+- [x] **DEPL-03**: Loading states for AI-powered interactions
+- [x] **DEPL-04**: Error boundaries with tactical-themed error display
 - [x] **DEPL-05**: Production Cloudflare resources provisioned (D1, KV, R2, AI Gateway)
 - [x] **DEPL-06**: GitHub Actions CI/CD pipeline (typecheck -> build -> deploy)
 - [ ] **DEPL-07**: Live deployment on `*.workers.dev` with shareable URL
@@ -203,10 +203,10 @@ Which phases cover which requirements. Updated during roadmap creation.
 | AI-03 | Phase 2 | Complete |
 | AI-04 | Phase 2 | Complete |
 | AI-05 | Phase 2 | Complete |
-| DEPL-01 | Phase 4 | Pending |
-| DEPL-02 | Phase 4 | Pending |
-| DEPL-03 | Phase 4 | Pending |
-| DEPL-04 | Phase 4 | Pending |
+| DEPL-01 | Phase 4 | Complete |
+| DEPL-02 | Phase 4 | Complete |
+| DEPL-03 | Phase 4 | Complete |
+| DEPL-04 | Phase 4 | Complete |
 | DEPL-05 | Phase 4 | Complete |
 | DEPL-06 | Phase 4 | Complete |
 | DEPL-07 | Phase 4 | Pending |
