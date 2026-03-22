@@ -79,11 +79,11 @@ Plans:
   3. AI-powered interactions (valuation submission, scenario generation) show loading states while processing and display tactical-themed error messages if something fails
   4. Pushing to main on GitHub automatically triggers a CI/CD pipeline that typechecks, builds, and deploys to Cloudflare Workers
   5. The app is live at a `*.workers.dev` URL that can be shared publicly
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
-- [ ] 04-01: TBD
-- [ ] 04-02: TBD
+- [ ] 04-01-PLAN.md -- Page transitions, responsive tablet layouts, loading states, and tactical error boundaries
+- [ ] 04-02-PLAN.md -- GitHub Actions CI/CD pipeline, production Cloudflare resources, and live deployment
 
 ## Progress
 
