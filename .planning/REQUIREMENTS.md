@@ -101,8 +101,8 @@
 - [ ] **DEPL-02**: Responsive design across desktop and tablet viewports
 - [ ] **DEPL-03**: Loading states for AI-powered interactions
 - [ ] **DEPL-04**: Error boundaries with tactical-themed error display
-- [ ] **DEPL-05**: Production Cloudflare resources provisioned (D1, KV, R2, AI Gateway)
-- [ ] **DEPL-06**: GitHub Actions CI/CD pipeline (typecheck -> build -> deploy)
+- [x] **DEPL-05**: Production Cloudflare resources provisioned (D1, KV, R2, AI Gateway)
+- [x] **DEPL-06**: GitHub Actions CI/CD pipeline (typecheck -> build -> deploy)
 - [ ] **DEPL-07**: Live deployment on `*.workers.dev` with shareable URL
 
 ## v2 Requirements
@@ -207,8 +207,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | DEPL-02 | Phase 4 | Pending |
 | DEPL-03 | Phase 4 | Pending |
 | DEPL-04 | Phase 4 | Pending |
-| DEPL-05 | Phase 4 | Pending |
-| DEPL-06 | Phase 4 | Pending |
+| DEPL-05 | Phase 4 | Complete |
+| DEPL-06 | Phase 4 | Complete |
 | DEPL-07 | Phase 4 | Pending |
 
 **Coverage:**
