@@ -1,15 +1,126 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { useState } from 'react'
+import { createFileRoute, useNavigate } from '@tanstack/react-router'
+import { motion } from 'motion/react'
+import { createValuation } from '~/core/functions/valuation.functions'
+import type { AssetCategory } from '~/core/types'
+import { TokenInput } from '~/components/ui/TokenInput'
+import { NeonButton } from '~/components/ui/NeonButton'
+import { SystemMetrics } from '~/components/screens/entry/SystemMetrics'
+import { AIPulse } from '~/components/screens/entry/AIPulse'
+import { SystemAssets } from '~/components/screens/entry/SystemAssets'
+import { CategorySelect } from '~/components/screens/entry/CategorySelect'
+import { staggerContainer, fadeInUp } from '~/components/animations/variants'
 
 export const Route = createFileRoute('/')({
   component: Home,
 })
 
 function Home() {
+  const [description, setDescription] = useState('')
+  const [category, setCategory] = useState<AssetCategory>('other')
+  const [isSubmitting, setIsSubmitting] = useState(false)
+  const navigate = useNavigate()
+
+  async function handleSubmit() {
+    if (!description.trim() || isSubmitting) return
+    setIsSubmitting(true)
+    try {
+      const result = await createValuation({ data: { description, category } })
+      navigate({ to: '/valuation/$assetId', params: { assetId: result.id } })
+    } catch (error) {
+      console.error('Valuation failed:', error)
+      setIsSubmitting(false)
+    }
+  }
+
   return (
-    <div className="container mx-auto px-8 py-12">
-      <h1 className="font-headline text-4xl text-primary-container">
-        TACTICAL ENTRY PROTOCOL
-      </h1>
-    </div>
+    <>
+      <motion.div
+        className="container mx-auto px-8 py-12 flex flex-col lg:flex-row gap-12 items-center justify-center"
+        variants={staggerContainer}
+        initial="hidden"
+        animate="visible"
+      >
+        {/* Left column: System Metrics */}
+        <motion.div
+          className="w-full lg:w-1/4 order-2 lg:order-1"
+          variants={fadeInUp}
+        >
+          <SystemMetrics />
+        </motion.div>
+
+        {/* Center column: Hero */}
+        <motion.div
+          className="w-full lg:w-2/4 flex flex-col items-center order-1 lg:order-2"
+          variants={fadeInUp}
+        >
+          {/* Title block */}
+          <div className="text-center mb-8">
+            <h1 className="font-headline font-black text-5xl md:text-7xl uppercase tracking-tighter leading-none mb-2 text-on-surface text-glitch-hover cursor-default">
+              TACTICAL{' '}
+              <span className="text-primary-container">ENTRY</span>{' '}
+              PROTOCOL
+            </h1>
+            <p className="font-body italic text-lg text-outline max-w-md mx-auto">
+              Harmonizing asset valuation through the Arcana lens. Submit the
+              subject for extraction.
+            </p>
+          </div>
+
+          {/* Input group */}
+          <div className="w-full relative group">
+            {/* Ambient glow behind input */}
+            <div className="absolute -inset-4 bg-gradient-to-r from-primary-container/5 via-accent/5 to-primary-container/5 blur-2xl opacity-50 group-hover:opacity-100 transition-opacity" />
+
+            <TokenInput
+              label="SUBJECT_IDENTIFIER"
+              icon={
+                <span className="animate-pulse text-xl">&#x25C6;</span>
+              }
+              placeholder="Enter asset description..."
+              value={description}
+              onChange={(e) => setDescription(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleSubmit()
+              }}
+            />
+          </div>
+
+          {/* Category selector */}
+          <div className="mt-4 w-full">
+            <CategorySelect value={category} onChange={setCategory} />
+          </div>
+
+          {/* Submit button */}
+          <div className="mt-8 flex justify-center">
+            <NeonButton
+              variant="primary"
+              size="lg"
+              onClick={handleSubmit}
+              disabled={isSubmitting}
+            >
+              {isSubmitting ? 'PROCESSING...' : 'INITIATE PROTOCOL'}
+              <span className="text-2xl">&#x26A1;</span>
+            </NeonButton>
+          </div>
+        </motion.div>
+
+        {/* Right column: AI Pulse + System Assets */}
+        <motion.div
+          className="w-full lg:w-1/4 flex flex-col gap-6 order-3"
+          variants={fadeInUp}
+        >
+          <AIPulse />
+          <SystemAssets />
+        </motion.div>
+      </motion.div>
+
+      {/* Background watermark */}
+      <div className="fixed bottom-0 left-0 p-12 pointer-events-none select-none z-0">
+        <h2 className="font-headline font-black text-[12vw] leading-none text-on-surface/[0.05] uppercase tracking-tighter mix-blend-overlay">
+          ENTRY_PRTCL
+        </h2>
+      </div>
+    </>
   )
 }
