@@ -60,13 +60,13 @@
 
 ### Screen 4 -- What If Lab
 
-- [ ] **WIF-01**: What If Lab page at `/what-if` matching Stitch design pixel-perfectly
-- [ ] **WIF-02**: Lab Parameters sidebar with AI engine architecture selector and token fuel allocator
-- [ ] **WIF-03**: 3 scenario cards: Shakespearean Loop (OMEGA), Repo Foundry (ALPHA), Infinite Debate (SIGMA)
-- [ ] **WIF-04**: Play trigger button on each card triggers AI generation
-- [ ] **WIF-05**: Typewriter text reveal animation for AI-generated scenario output
-- [ ] **WIF-06**: "RUN SIMULATION" master button
-- [ ] **WIF-07**: Active timebase and logic score counters in header
+- [x] **WIF-01**: What If Lab page at `/what-if` matching Stitch design pixel-perfectly
+- [x] **WIF-02**: Lab Parameters sidebar with AI engine architecture selector and token fuel allocator
+- [x] **WIF-03**: 3 scenario cards: Shakespearean Loop (OMEGA), Repo Foundry (ALPHA), Infinite Debate (SIGMA)
+- [x] **WIF-04**: Play trigger button on each card triggers AI generation
+- [x] **WIF-05**: Typewriter text reveal animation for AI-generated scenario output
+- [x] **WIF-06**: "RUN SIMULATION" master button
+- [x] **WIF-07**: Active timebase and logic score counters in header
 
 ### Screen 5 -- Tactical Terminal
 
@@ -178,13 +178,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | REV-05 | Phase 2 | Complete |
 | REV-06 | Phase 2 | Complete |
 | REV-07 | Phase 2 | Complete |
-| WIF-01 | Phase 3 | Pending |
-| WIF-02 | Phase 3 | Pending |
-| WIF-03 | Phase 3 | Pending |
-| WIF-04 | Phase 3 | Pending |
-| WIF-05 | Phase 3 | Pending |
-| WIF-06 | Phase 3 | Pending |
-| WIF-07 | Phase 3 | Pending |
+| WIF-01 | Phase 3 | Complete |
+| WIF-02 | Phase 3 | Complete |
+| WIF-03 | Phase 3 | Complete |
+| WIF-04 | Phase 3 | Complete |
+| WIF-05 | Phase 3 | Complete |
+| WIF-06 | Phase 3 | Complete |
+| WIF-07 | Phase 3 | Complete |
 | TRM-01 | Phase 3 | Complete |
 | TRM-02 | Phase 3 | Complete |
 | TRM-03 | Phase 3 | Complete |

@@ -3,8 +3,8 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
 status: unknown
-stopped_at: Completed 03-03-PLAN.md (Tactical Terminal)
-last_updated: "2026-03-22T08:00:20.464Z"
+stopped_at: Completed 03-02-PLAN.md (What If Lab screen)
+last_updated: "2026-03-22T08:00:37.328Z"
 progress:
   total_phases: 4
   completed_phases: 3
@@ -86,6 +86,9 @@ Recent decisions affecting current work:
 - [Phase 02]: MultiplierEffect falls back to 3 default cards when AI categories unavailable
 - [Phase 03]: Used inline SVG icons for terminal sidebar instead of icon library -- no dependency needed for 4 simple icons
 - [Phase 03]: Custom inline log entry rendering instead of TerminalLog component for per-entry animation-delay control matching Stitch type-in effect
+- [Phase 03]: Used inline SVG play icon and Unicode symbols for engine icons (lucide-react not installed)
+- [Phase 03]: LabParameters sidebar is decorative -- controls are interactive-looking but do not affect AI behavior
+- [Phase 03]: Scenario AI prompts request 3-4 sentences with 30ms typewriter speed for readable output
 
 ### Pending Todos
 
@@ -97,6 +100,6 @@ None yet.
 
 ## Session Continuity
 
-Last session: 2026-03-22T08:00:05.136Z
-Stopped at: Completed 03-03-PLAN.md (Tactical Terminal)
+Last session: 2026-03-22T08:00:30.080Z
+Stopped at: Completed 03-02-PLAN.md (What If Lab screen)
 Resume file: None
