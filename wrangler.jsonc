@@ -9,20 +9,14 @@
     {
       "binding": "DB",
       "database_name": "token-for-granted-db",
-      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
+      "database_id": "2daddac0-3f1c-4502-82f5-a4ce7c2ebcc6",
       "migrations_dir": "migrations"
     }
   ],
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
-    }
-  ],
-  "r2_buckets": [
-    {
-      "binding": "ASSETS_BUCKET",
-      "bucket_name": "token-for-granted-assets"
+      "id": "b66d5c6d7559457eab9e05a3b92cda91"
     }
   ],
   "vars": {

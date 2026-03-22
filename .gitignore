@@ -30,3 +30,12 @@ tmp/
 .vinxi/
 .output/
 worker-configuration.d.ts
+
+# Stitch design references (not part of app)
+.bg-shell/
+hex_tactical_protocol/
+tactical_entry_protocol_animated/
+tactical_reveal_animated/
+tactical_terminal_animated/
+tactical_value_matrix_animated/
+what_if_lab_animated/

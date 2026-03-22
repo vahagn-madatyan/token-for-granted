@@ -2,7 +2,7 @@ terraform {
   required_providers {
     cloudflare = {
       source  = "cloudflare/cloudflare"
-      version = "~> 5.0"
+      version = "~> 4.0"
     }
   }
   required_version = ">= 1.0"
@@ -40,11 +40,37 @@ resource "cloudflare_workers_kv_namespace" "token_kv" {
 }
 
 # -----------------------------------------------------
-# R2 Bucket
+# AI Gateway (no native TF resource — use API directly)
 # -----------------------------------------------------
-resource "cloudflare_r2_bucket" "token_assets" {
-  account_id = var.cloudflare_account_id
-  name       = "token-for-granted-assets"
+resource "terraform_data" "ai_gateway" {
+  depends_on = [cloudflare_d1_database.token_db]
+
+  provisioner "local-exec" {
+    command = <<-EOT
+      curl -s -X POST \
+        "https://api.cloudflare.com/client/v4/accounts/${var.cloudflare_account_id}/ai-gateway/gateways" \
+        -H "Authorization: Bearer ${var.cloudflare_api_token}" \
+        -H "Content-Type: application/json" \
+        -d '{"id":"token-for-granted-gateway","name":"token-for-granted-gateway"}' \
+        | python3 -c "import sys,json; r=json.load(sys.stdin); print('AI Gateway created' if r.get('success') else f'Note: {r}')"
+    EOT
+  }
+}
+
+# -----------------------------------------------------
+# D1 Migrations (run after database creation)
+# -----------------------------------------------------
+resource "terraform_data" "d1_migrations" {
+  depends_on = [cloudflare_d1_database.token_db]
+
+  provisioner "local-exec" {
+    working_dir = "${path.module}/.."
+    command     = "npx wrangler d1 migrations apply token-for-granted-db --remote"
+    environment = {
+      CLOUDFLARE_API_TOKEN  = var.cloudflare_api_token
+      CLOUDFLARE_ACCOUNT_ID = var.cloudflare_account_id
+    }
+  }
 }
 
 # -----------------------------------------------------
@@ -58,11 +84,6 @@ output "d1_database_id" {
 output "kv_namespace_id" {
   description = "KV namespace ID for wrangler.jsonc"
   value       = cloudflare_workers_kv_namespace.token_kv.id
-}
-
-output "r2_bucket_name" {
-  description = "R2 bucket name"
-  value       = cloudflare_r2_bucket.token_assets.name
 }
 
 output "wrangler_update_instructions" {
