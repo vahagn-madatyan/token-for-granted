@@ -41,7 +41,7 @@ function Home() {
   return (
     <>
       <motion.div
-        className="container mx-auto px-8 py-12 flex flex-col lg:flex-row gap-12 items-center justify-center"
+        className="container mx-auto px-4 md:px-8 py-8 md:py-12 flex flex-col lg:flex-row gap-8 md:gap-12 items-center justify-center"
         variants={staggerContainer}
         initial="hidden"
         animate="visible"

@@ -18,12 +18,12 @@ function WhatIf() {
   }
 
   return (
-    <div className="flex min-h-[calc(100vh-8rem)]">
+    <div className="flex flex-col lg:flex-row min-h-[calc(100vh-8rem)]">
       {/* Left sidebar: Lab Parameters */}
       <LabParameters />
 
       {/* Right: Main content */}
-      <section className="flex-1 p-12 overflow-y-auto relative">
+      <section className="flex-1 p-6 md:p-12 overflow-y-auto relative">
         {/* Large watermark */}
         <div className="fixed bottom-0 right-0 font-headline font-black text-[18vw] leading-none text-on-surface opacity-[0.03] pointer-events-none select-none -mb-20">
           HEXTECH
@@ -37,7 +37,7 @@ function WhatIf() {
           animate="visible"
         >
           <div className="space-y-1">
-            <h1 className="font-headline text-5xl font-black text-on-surface tracking-tighter uppercase">
+            <h1 className="font-headline text-3xl md:text-5xl font-black text-on-surface tracking-tighter uppercase">
               Generation Potentials
             </h1>
             <p className="font-body text-outline italic text-lg max-w-xl">

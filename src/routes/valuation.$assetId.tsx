@@ -51,10 +51,10 @@ function ValuationReveal() {
     'Transmutation confirmed. Raw digital compute has been solidified into physical rarity.'
 
   return (
-    <div className="max-w-7xl mx-auto p-6 md:p-10 space-y-16">
+    <div className="max-w-7xl mx-auto p-4 md:p-6 lg:p-10 space-y-10 md:space-y-16">
       {/* SECTION 1: ASSET CONTAINMENT (THE BIG REVEAL) */}
       <motion.section
-        className="grid lg:grid-cols-2 gap-12 items-center"
+        className="grid grid-cols-1 lg:grid-cols-2 gap-8 md:gap-12 items-center"
         variants={staggerContainer}
         initial="hidden"
         animate="visible"
@@ -73,7 +73,7 @@ function ValuationReveal() {
 
           {/* Title with glitch hover effect */}
           <div className="text-glitch-hover group cursor-default relative inline-block">
-            <h1 className="text-6xl md:text-8xl font-headline font-black text-accent leading-tight uppercase tracking-tighter">
+            <h1 className="text-4xl md:text-6xl lg:text-8xl font-headline font-black text-accent leading-tight uppercase tracking-tighter">
               ASSET <span className="text-secondary">CONTAINMENT</span> UNIT.
             </h1>
           </div>
@@ -84,7 +84,7 @@ function ValuationReveal() {
           </p>
 
           {/* Value cards */}
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {/* Current Base Value */}
             <div className="p-6 bg-surface-container-low border border-secondary/20 relative group overflow-hidden">
               <div className="font-label text-[10px] text-outline uppercase tracking-widest mb-1">

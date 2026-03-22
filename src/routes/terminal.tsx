@@ -91,11 +91,13 @@ function Terminal() {
       `}</style>
 
       <div className="flex h-[calc(100vh-8rem)]">
-        {/* Left Sidebar */}
-        <TerminalSidebar />
+        {/* Left Sidebar -- hidden on tablet */}
+        <div className="hidden lg:block">
+          <TerminalSidebar />
+        </div>
 
         {/* Center: Main Terminal */}
-        <section className="flex-grow flex flex-col gap-4 p-8 relative grid-bg overflow-hidden">
+        <section className="flex-grow flex flex-col gap-4 p-4 md:p-8 relative grid-bg overflow-hidden">
           {/* Background hex shimmer decorations */}
           <div className="absolute inset-0 pointer-events-none overflow-hidden">
             <div className="absolute top-1/4 right-0 w-96 h-96 bg-primary-container/5 blur-[120px] rounded-full hex-shimmer-layer" />
@@ -234,8 +236,10 @@ function Terminal() {
           </form>
         </section>
 
-        {/* Right Panel: System Monitor */}
-        <SystemMonitor />
+        {/* Right Panel: System Monitor -- hidden on tablet */}
+        <div className="hidden lg:block">
+          <SystemMonitor />
+        </div>
       </div>
     </>
   )

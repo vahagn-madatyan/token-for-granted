@@ -12,9 +12,9 @@ export function Header() {
   const currentPath = routerState.location.pathname
 
   return (
-    <header className="fixed top-0 w-full h-16 z-50 bg-[#0a141e]/90 backdrop-blur-md border-b-2 border-primary-container/20 shadow-[0_4px_20px_rgba(0,245,255,0.1)] flex justify-between items-center px-6">
-      <div className="flex items-center gap-8 h-full">
-        <div className="text-2xl font-black tracking-widest text-accent italic font-headline uppercase text-glitch-hover cursor-default">
+    <header className="fixed top-0 w-full h-16 z-50 bg-[#0a141e]/90 backdrop-blur-md border-b-2 border-primary-container/20 shadow-[0_4px_20px_rgba(0,245,255,0.1)] flex justify-between items-center px-4 md:px-6">
+      <div className="flex items-center gap-4 md:gap-8 h-full">
+        <div className="text-lg md:text-2xl font-black tracking-widest text-accent italic font-headline uppercase text-glitch-hover cursor-default">
           TACTICAL ARCANA
         </div>
         <nav className="hidden md:flex items-center h-full divide-x divide-primary-container/30 font-headline uppercase tracking-tighter font-bold text-xs">

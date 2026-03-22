@@ -61,11 +61,11 @@ export const Route = createFileRoute('/ranking')({
 
 function Ranking() {
   return (
-    <div className="pt-32 pb-20 px-6 md:px-12 max-w-7xl mx-auto">
+    <div className="pt-20 md:pt-32 pb-20 px-4 md:px-6 lg:px-12 max-w-7xl mx-auto">
       {/* Title Section */}
       <div className="mb-20 relative">
         {/* Giant watermark */}
-        <h2 className="font-headline text-8xl md:text-[12rem] font-black uppercase opacity-[0.03] absolute -top-20 -left-10 pointer-events-none select-none tracking-tighter text-primary-container">
+        <h2 className="font-headline text-6xl md:text-8xl lg:text-[12rem] font-black uppercase opacity-[0.03] absolute -top-20 -left-10 pointer-events-none select-none tracking-tighter text-primary-container">
           MATRIX
         </h2>
 
@@ -73,7 +73,7 @@ function Ranking() {
           <p className="font-label text-secondary text-sm tracking-[0.5em] mb-3 uppercase">
             AUTHENTICATING // TOKEN_VALUE_DENSITY
           </p>
-          <h1 className="font-headline text-5xl md:text-8xl font-extrabold uppercase tracking-tighter leading-none mb-6">
+          <h1 className="font-headline text-3xl md:text-5xl lg:text-8xl font-extrabold uppercase tracking-tighter leading-none mb-6">
             Value <span className="text-primary-container">Matrix</span>
           </h1>
           <p className="font-body text-on-surface-variant max-w-3xl text-xl italic leading-relaxed">
