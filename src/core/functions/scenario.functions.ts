@@ -1,6 +1,14 @@
 import { createServerFn } from '@tanstack/react-start'
 import { z } from 'zod'
-import { env } from 'cloudflare:workers'
+import { getEvent } from 'vinxi/http'
+
+function getEnv() {
+  const event = getEvent()
+  return (event as any).context.cloudflare.env as {
+    AI: any
+    AI_GATEWAY_ID: string
+  }
+}
 
 const SCENARIO_PROMPTS: Record<string, string> = {
   'shakespearean-loop': `You are a poetic AI that writes in Shakespearean style. Generate a short (3-4 sentence) creative passage imagining what would happen if an AI wrote 5,000 sonnets per second, refining poetic structure until indistinguishable from Shakespeare. Be dramatic, use archaic language mixed with tech terminology. Be creative and unique each time.`,
@@ -37,11 +45,11 @@ export const runScenario = createServerFn({ method: 'POST' })
 
     // 1. Try primary model
     try {
-      const response = await env.AI.run(
+      const response = await getEnv().AI.run(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         '@cf/meta/llama-3.1-8b-instruct-fast' as any,
         { messages, max_tokens: 256 },
-        { gateway: { id: env.AI_GATEWAY_ID, skipCache: false } }
+        { gateway: { id: getEnv().AI_GATEWAY_ID, skipCache: false } }
       )
 
       const text =
@@ -60,11 +68,11 @@ export const runScenario = createServerFn({ method: 'POST' })
 
     // 2. Try fallback model
     try {
-      const response = await env.AI.run(
+      const response = await getEnv().AI.run(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         '@cf/mistral/mistral-7b-instruct-v0.2' as any,
         { messages, max_tokens: 256 },
-        { gateway: { id: env.AI_GATEWAY_ID, skipCache: false } }
+        { gateway: { id: getEnv().AI_GATEWAY_ID, skipCache: false } }
       )
 
       const text =

@@ -1,9 +1,12 @@
-import { env } from 'cloudflare:workers'
-// Fallback if cloudflare:workers causes build issues (TanStack/router#6185):
-// import { getEvent } from 'vinxi/http'
-// function getEnv() { return (getEvent() as any).context.cloudflare.env as typeof env }
-
+import { getEvent } from 'vinxi/http'
 import type { AIValuationResponse } from '~/core/types'
+
+function getEnv() {
+  const event = getEvent()
+  return (event as any).context.cloudflare.env as {
+    KV: KVNamespace
+  }
+}
 
 /**
  * Compute a deterministic cache key from description and category.
@@ -29,7 +32,7 @@ export async function computeCacheKey(
 export async function getCachedValuation(
   key: string
 ): Promise<AIValuationResponse | null> {
-  const cached = await env.KV.get<AIValuationResponse>(key, 'json')
+  const cached = await getEnv().KV.get<AIValuationResponse>(key, 'json')
   return cached ?? null
 }
 
@@ -40,5 +43,5 @@ export async function setCachedValuation(
   key: string,
   data: AIValuationResponse
 ): Promise<void> {
-  await env.KV.put(key, JSON.stringify(data), { expirationTtl: 3600 })
+  await getEnv().KV.put(key, JSON.stringify(data), { expirationTtl: 3600 })
 }

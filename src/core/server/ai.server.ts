@@ -1,9 +1,13 @@
-import { env } from 'cloudflare:workers'
-// Fallback if cloudflare:workers causes build issues (TanStack/router#6185):
-// import { getEvent } from 'vinxi/http'
-// function getEnv() { return (getEvent() as any).context.cloudflare.env as typeof env }
-
+import { getEvent } from 'vinxi/http'
 import type { AIValuationResponse, AssetCategory } from '~/core/types'
+
+function getEnv() {
+  const event = getEvent()
+  return (event as any).context.cloudflare.env as {
+    AI: any
+    AI_GATEWAY_ID: string
+  }
+}
 import { computeCacheKey, getCachedValuation, setCachedValuation } from './cache.server'
 
 const VALUATION_SYSTEM_PROMPT = `You are the ARCANA Tactical Valuation Engine, a sophisticated AI system that analyzes assets and provides tactical market intelligence. You MUST respond with valid JSON only, no markdown or explanation outside the JSON.
@@ -53,11 +57,11 @@ export async function generateValuation(
 
   // 2. Try primary model
   try {
-    const response = await env.AI.run(
+    const response = await getEnv().AI.run(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       '@cf/meta/llama-3.1-8b-instruct-fast' as any,
       { messages, max_tokens: 512 },
-      { gateway: { id: env.AI_GATEWAY_ID, skipCache: false } }
+      { gateway: { id: getEnv().AI_GATEWAY_ID, skipCache: false } }
     )
 
     const text = typeof response === 'string'
@@ -74,11 +78,11 @@ export async function generateValuation(
   // 3. Try fallback model if primary failed
   if (!result) {
     try {
-      const response = await env.AI.run(
+      const response = await getEnv().AI.run(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         '@cf/mistral/mistral-7b-instruct-v0.2' as any,
         { messages, max_tokens: 512 },
-        { gateway: { id: env.AI_GATEWAY_ID, skipCache: false } }
+        { gateway: { id: getEnv().AI_GATEWAY_ID, skipCache: false } }
       )
 
       const text = typeof response === 'string'
