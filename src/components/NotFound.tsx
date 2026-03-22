@@ -1,25 +1,45 @@
 import { Link } from '@tanstack/react-router'
+import { HexCard } from '~/components/ui/HexCard'
+import { GlitchText } from '~/components/ui/GlitchText'
+import { NeonButton } from '~/components/ui/NeonButton'
 
 export function NotFound({ children }: { children?: any }) {
   return (
-    <div className="space-y-2 p-2">
-      <div className="text-gray-600 dark:text-gray-400">
-        {children || <p>The page you are looking for does not exist.</p>}
-      </div>
-      <p className="flex items-center gap-2 flex-wrap">
-        <button
-          onClick={() => window.history.back()}
-          className="bg-emerald-500 text-white px-2 py-1 rounded-sm uppercase font-black text-sm"
-        >
-          Go back
-        </button>
-        <Link
-          to="/"
-          className="bg-cyan-600 text-white px-2 py-1 rounded-sm uppercase font-black text-sm"
-        >
-          Start Over
-        </Link>
-      </p>
+    <div className="min-h-[60vh] flex items-center justify-center p-4">
+      <HexCard
+        elevation="high"
+        glow="cyan"
+        borderAccent="primary"
+        clip="tr"
+        className="max-w-lg w-full text-center space-y-6"
+      >
+        <GlitchText
+          text="SIGNAL LOST"
+          as="h1"
+          active
+          className="text-4xl text-primary-container font-headline font-black"
+        />
+
+        <div className="font-label text-xs text-on-surface-variant uppercase tracking-widest">
+          {children || 'TARGET_NOT_FOUND // ROUTE DOES NOT EXIST'}
+        </div>
+
+        <div className="flex flex-col items-center gap-4 pt-4">
+          <NeonButton
+            variant="secondary"
+            onClick={() => window.history.back()}
+          >
+            GO BACK
+          </NeonButton>
+
+          <Link
+            to="/"
+            className="font-label text-xs text-primary-container hover:text-primary transition-colors uppercase tracking-widest"
+          >
+            RETURN TO BASE
+          </Link>
+        </div>
+      </HexCard>
     </div>
   )
 }

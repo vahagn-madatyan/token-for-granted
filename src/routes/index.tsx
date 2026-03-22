@@ -1,15 +1,20 @@
 import { useState } from 'react'
 import { createFileRoute, useNavigate } from '@tanstack/react-router'
-import { motion } from 'motion/react'
+import { AnimatePresence, motion } from 'motion/react'
 import { createValuation } from '~/core/functions/valuation.functions'
 import type { AssetCategory } from '~/core/types'
 import { TokenInput } from '~/components/ui/TokenInput'
 import { NeonButton } from '~/components/ui/NeonButton'
+import { HexCard } from '~/components/ui/HexCard'
 import { SystemMetrics } from '~/components/screens/entry/SystemMetrics'
 import { AIPulse } from '~/components/screens/entry/AIPulse'
 import { SystemAssets } from '~/components/screens/entry/SystemAssets'
 import { CategorySelect } from '~/components/screens/entry/CategorySelect'
-import { staggerContainer, fadeInUp } from '~/components/animations/variants'
+import {
+  staggerContainer,
+  fadeInUp,
+  pulseGlow,
+} from '~/components/animations/variants'
 
 export const Route = createFileRoute('/')({
   component: Home,
@@ -114,6 +119,30 @@ function Home() {
           <SystemAssets />
         </motion.div>
       </motion.div>
+
+      {/* Loading overlay */}
+      <AnimatePresence>
+        {isSubmitting && (
+          <motion.div
+            className="fixed inset-0 z-40 flex items-center justify-center bg-surface/60 backdrop-blur-sm"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            transition={{ duration: 0.3 }}
+          >
+            <motion.div animate={pulseGlow.animate}>
+              <HexCard elevation="medium" glow="cyan" className="text-center space-y-3">
+                <div className="font-label text-xs text-primary-container animate-pulse uppercase tracking-widest">
+                  PROCESSING...
+                </div>
+                <div className="font-label text-[10px] text-outline uppercase tracking-widest">
+                  ARCANA ENGINE ANALYZING ASSET
+                </div>
+              </HexCard>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       {/* Background watermark */}
       <div className="fixed bottom-0 left-0 p-12 pointer-events-none select-none z-0">
