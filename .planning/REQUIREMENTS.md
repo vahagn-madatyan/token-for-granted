@@ -1,7 +1,7 @@
-# Requirements: Token For Granted — Tactical Arcana
+# Requirements: Token For Granted -- Tactical Arcana
 
 **Defined:** 2026-03-21
-**Core Value:** Pixel-perfect recreation of Stitch screen designs with stunning Neon Monolith aesthetic — visual impact is everything for this portfolio piece.
+**Core Value:** Pixel-perfect recreation of Stitch screen designs with stunning Neon Monolith aesthetic -- visual impact is everything for this portfolio piece.
 
 ## v1 Requirements
 
@@ -30,7 +30,7 @@
 - [ ] **UICM-12**: useCountUp hook for animated number transitions via requestAnimationFrame
 - [ ] **UICM-13**: Shared Framer Motion variants (fadeInUp, staggerContainer, scaleIn, pulseGlow)
 
-### Screen 1 — Tactical Entry Protocol
+### Screen 1 -- Tactical Entry Protocol
 
 - [ ] **ENT-01**: Landing page at `/` matching Stitch design pixel-perfectly
 - [ ] **ENT-02**: System metrics cards (84.2 T-FLOPS, 1.4M ARC, +2.4%, 12ms) with count-up animation
@@ -40,7 +40,7 @@
 - [ ] **ENT-06**: System assets panel showing RARE_ASSET_1 and CORE_TOKEN status
 - [ ] **ENT-07**: Background watermark text "ENTRY_PRTCL" with reduced opacity
 
-### Screen 2 — Tactical Value Matrix
+### Screen 2 -- Tactical Value Matrix
 
 - [ ] **VAL-01**: Rankings page at `/ranking` matching Stitch design pixel-perfectly
 - [ ] **VAL-02**: S/A/B/C tier cards showing valuated items with images, descriptions, density scores
@@ -48,7 +48,7 @@
 - [ ] **VAL-04**: Transformation Logic section with bar chart and conversion metrics
 - [ ] **VAL-05**: Color-coded tier badges (S=cyan, A=magenta, B=lime, C=neutral)
 
-### Screen 3 — Tactical Reveal
+### Screen 3 -- Tactical Reveal
 
 - [ ] **REV-01**: Valuation detail page at `/valuation/$assetId` matching Stitch design pixel-perfectly
 - [ ] **REV-02**: Asset Containment Unit header with breadcrumb navigation
@@ -58,7 +58,7 @@
 - [ ] **REV-06**: The Multiplier Effect section with category cards (Indie Games, Art Vaults, Narratives)
 - [ ] **REV-07**: Asset metadata (name, art edition, code identifier)
 
-### Screen 4 — What If Lab
+### Screen 4 -- What If Lab
 
 - [ ] **WIF-01**: What If Lab page at `/what-if` matching Stitch design pixel-perfectly
 - [ ] **WIF-02**: Lab Parameters sidebar with AI engine architecture selector and token fuel allocator
@@ -68,7 +68,7 @@
 - [ ] **WIF-06**: "RUN SIMULATION" master button
 - [ ] **WIF-07**: Active timebase and logic score counters in header
 
-### Screen 5 — Tactical Terminal
+### Screen 5 -- Tactical Terminal
 
 - [ ] **TRM-01**: Terminal page at `/terminal` matching Stitch design pixel-perfectly
 - [ ] **TRM-02**: Command console with timestamped, color-coded log entries (INFO, WARNING, CRITICAL)
@@ -93,7 +93,7 @@
 - [ ] **AI-02**: Valuation prompt engineering returning structured JSON (value, projection, confidence, tier, density)
 - [ ] **AI-03**: Scenario generation prompts for all 3 What If experiments
 - [ ] **AI-04**: Fallback to `@cf/mistral/mistral-7b-instruct-v0.2` on primary model failure
-- [ ] **AI-05**: AI responses feel semi-real — reasonable analysis wrapped in tactical aesthetic
+- [ ] **AI-05**: AI responses feel semi-real -- reasonable analysis wrapped in tactical aesthetic
 
 ### Deploy & Polish
 
@@ -102,7 +102,7 @@
 - [ ] **DEPL-03**: Loading states for AI-powered interactions
 - [ ] **DEPL-04**: Error boundaries with tactical-themed error display
 - [ ] **DEPL-05**: Production Cloudflare resources provisioned (D1, KV, R2, AI Gateway)
-- [ ] **DEPL-06**: GitHub Actions CI/CD pipeline (typecheck → build → deploy)
+- [ ] **DEPL-06**: GitHub Actions CI/CD pipeline (typecheck -> build -> deploy)
 - [ ] **DEPL-07**: Live deployment on `*.workers.dev` with shareable URL
 
 ## v2 Requirements
@@ -123,7 +123,7 @@
 
 | Feature | Reason |
 |---------|--------|
-| User authentication / accounts | Portfolio demo — no need for user management |
+| User authentication / accounts | Portfolio demo -- no need for user management |
 | OAuth / social login | No auth system at all |
 | Payment processing | No monetization planned |
 | Mobile native app | Web-only portfolio piece |
@@ -140,82 +140,82 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUN-01 | - | Pending |
-| FOUN-02 | - | Pending |
-| FOUN-03 | - | Pending |
-| FOUN-04 | - | Pending |
-| FOUN-05 | - | Pending |
-| FOUN-06 | - | Pending |
-| UICM-01 | - | Pending |
-| UICM-02 | - | Pending |
-| UICM-03 | - | Pending |
-| UICM-04 | - | Pending |
-| UICM-05 | - | Pending |
-| UICM-06 | - | Pending |
-| UICM-07 | - | Pending |
-| UICM-08 | - | Pending |
-| UICM-09 | - | Pending |
-| UICM-10 | - | Pending |
-| UICM-11 | - | Pending |
-| UICM-12 | - | Pending |
-| UICM-13 | - | Pending |
-| ENT-01 | - | Pending |
-| ENT-02 | - | Pending |
-| ENT-03 | - | Pending |
-| ENT-04 | - | Pending |
-| ENT-05 | - | Pending |
-| ENT-06 | - | Pending |
-| ENT-07 | - | Pending |
-| VAL-01 | - | Pending |
-| VAL-02 | - | Pending |
-| VAL-03 | - | Pending |
-| VAL-04 | - | Pending |
-| VAL-05 | - | Pending |
-| REV-01 | - | Pending |
-| REV-02 | - | Pending |
-| REV-03 | - | Pending |
-| REV-04 | - | Pending |
-| REV-05 | - | Pending |
-| REV-06 | - | Pending |
-| REV-07 | - | Pending |
-| WIF-01 | - | Pending |
-| WIF-02 | - | Pending |
-| WIF-03 | - | Pending |
-| WIF-04 | - | Pending |
-| WIF-05 | - | Pending |
-| WIF-06 | - | Pending |
-| WIF-07 | - | Pending |
-| TRM-01 | - | Pending |
-| TRM-02 | - | Pending |
-| TRM-03 | - | Pending |
-| TRM-04 | - | Pending |
-| TRM-05 | - | Pending |
-| TRM-06 | - | Pending |
-| TRM-07 | - | Pending |
-| TRM-08 | - | Pending |
-| DATA-01 | - | Pending |
-| DATA-02 | - | Pending |
-| DATA-03 | - | Pending |
-| DATA-04 | - | Pending |
-| DATA-05 | - | Pending |
-| AI-01 | - | Pending |
-| AI-02 | - | Pending |
-| AI-03 | - | Pending |
-| AI-04 | - | Pending |
-| AI-05 | - | Pending |
-| DEPL-01 | - | Pending |
-| DEPL-02 | - | Pending |
-| DEPL-03 | - | Pending |
-| DEPL-04 | - | Pending |
-| DEPL-05 | - | Pending |
-| DEPL-06 | - | Pending |
-| DEPL-07 | - | Pending |
+| FOUN-01 | Phase 1 | Pending |
+| FOUN-02 | Phase 1 | Pending |
+| FOUN-03 | Phase 1 | Pending |
+| FOUN-04 | Phase 1 | Pending |
+| FOUN-05 | Phase 1 | Pending |
+| FOUN-06 | Phase 1 | Pending |
+| UICM-01 | Phase 1 | Pending |
+| UICM-02 | Phase 1 | Pending |
+| UICM-03 | Phase 1 | Pending |
+| UICM-04 | Phase 1 | Pending |
+| UICM-05 | Phase 1 | Pending |
+| UICM-06 | Phase 1 | Pending |
+| UICM-07 | Phase 1 | Pending |
+| UICM-08 | Phase 1 | Pending |
+| UICM-09 | Phase 1 | Pending |
+| UICM-10 | Phase 1 | Pending |
+| UICM-11 | Phase 1 | Pending |
+| UICM-12 | Phase 1 | Pending |
+| UICM-13 | Phase 1 | Pending |
+| ENT-01 | Phase 2 | Pending |
+| ENT-02 | Phase 2 | Pending |
+| ENT-03 | Phase 2 | Pending |
+| ENT-04 | Phase 2 | Pending |
+| ENT-05 | Phase 2 | Pending |
+| ENT-06 | Phase 2 | Pending |
+| ENT-07 | Phase 2 | Pending |
+| VAL-01 | Phase 3 | Pending |
+| VAL-02 | Phase 3 | Pending |
+| VAL-03 | Phase 3 | Pending |
+| VAL-04 | Phase 3 | Pending |
+| VAL-05 | Phase 3 | Pending |
+| REV-01 | Phase 2 | Pending |
+| REV-02 | Phase 2 | Pending |
+| REV-03 | Phase 2 | Pending |
+| REV-04 | Phase 2 | Pending |
+| REV-05 | Phase 2 | Pending |
+| REV-06 | Phase 2 | Pending |
+| REV-07 | Phase 2 | Pending |
+| WIF-01 | Phase 3 | Pending |
+| WIF-02 | Phase 3 | Pending |
+| WIF-03 | Phase 3 | Pending |
+| WIF-04 | Phase 3 | Pending |
+| WIF-05 | Phase 3 | Pending |
+| WIF-06 | Phase 3 | Pending |
+| WIF-07 | Phase 3 | Pending |
+| TRM-01 | Phase 3 | Pending |
+| TRM-02 | Phase 3 | Pending |
+| TRM-03 | Phase 3 | Pending |
+| TRM-04 | Phase 3 | Pending |
+| TRM-05 | Phase 3 | Pending |
+| TRM-06 | Phase 3 | Pending |
+| TRM-07 | Phase 3 | Pending |
+| TRM-08 | Phase 3 | Pending |
+| DATA-01 | Phase 2 | Pending |
+| DATA-02 | Phase 2 | Pending |
+| DATA-03 | Phase 2 | Pending |
+| DATA-04 | Phase 2 | Pending |
+| DATA-05 | Phase 2 | Pending |
+| AI-01 | Phase 2 | Pending |
+| AI-02 | Phase 2 | Pending |
+| AI-03 | Phase 2 | Pending |
+| AI-04 | Phase 2 | Pending |
+| AI-05 | Phase 2 | Pending |
+| DEPL-01 | Phase 4 | Pending |
+| DEPL-02 | Phase 4 | Pending |
+| DEPL-03 | Phase 4 | Pending |
+| DEPL-04 | Phase 4 | Pending |
+| DEPL-05 | Phase 4 | Pending |
+| DEPL-06 | Phase 4 | Pending |
+| DEPL-07 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: 62 total
-- Mapped to phases: 0
-- Unmapped: 62 ⚠️
+- v1 requirements: 70 total
+- Mapped to phases: 70
+- Unmapped: 0
 
 ---
 *Requirements defined: 2026-03-21*
-*Last updated: 2026-03-21 after initial definition*
+*Last updated: 2026-03-21 after roadmap creation*
