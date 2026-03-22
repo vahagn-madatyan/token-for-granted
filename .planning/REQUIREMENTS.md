@@ -42,11 +42,11 @@
 
 ### Screen 2 -- Tactical Value Matrix
 
-- [ ] **VAL-01**: Rankings page at `/ranking` matching Stitch design pixel-perfectly
-- [ ] **VAL-02**: S/A/B/C tier cards showing valuated items with images, descriptions, density scores
-- [ ] **VAL-03**: Animated progress bars per tier card showing density score
-- [ ] **VAL-04**: Transformation Logic section with bar chart and conversion metrics
-- [ ] **VAL-05**: Color-coded tier badges (S=cyan, A=magenta, B=lime, C=neutral)
+- [x] **VAL-01**: Rankings page at `/ranking` matching Stitch design pixel-perfectly
+- [x] **VAL-02**: S/A/B/C tier cards showing valuated items with images, descriptions, density scores
+- [x] **VAL-03**: Animated progress bars per tier card showing density score
+- [x] **VAL-04**: Transformation Logic section with bar chart and conversion metrics
+- [x] **VAL-05**: Color-coded tier badges (S=cyan, A=magenta, B=lime, C=neutral)
 
 ### Screen 3 -- Tactical Reveal
 
@@ -166,11 +166,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ENT-05 | Phase 2 | Complete |
 | ENT-06 | Phase 2 | Complete |
 | ENT-07 | Phase 2 | Complete |
-| VAL-01 | Phase 3 | Pending |
-| VAL-02 | Phase 3 | Pending |
-| VAL-03 | Phase 3 | Pending |
-| VAL-04 | Phase 3 | Pending |
-| VAL-05 | Phase 3 | Pending |
+| VAL-01 | Phase 3 | Complete |
+| VAL-02 | Phase 3 | Complete |
+| VAL-03 | Phase 3 | Complete |
+| VAL-04 | Phase 3 | Complete |
+| VAL-05 | Phase 3 | Complete |
 | REV-01 | Phase 2 | Complete |
 | REV-02 | Phase 2 | Complete |
 | REV-03 | Phase 2 | Complete |
