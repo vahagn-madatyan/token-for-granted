@@ -7,12 +7,12 @@
 
 ### Foundation
 
-- [ ] **FOUN-01**: TanStack Start project scaffolded with Cloudflare Workers support
-- [ ] **FOUN-02**: Tailwind CSS v4 configured with full Neon Monolith design token system
-- [ ] **FOUN-03**: Space Grotesk and Inter fonts loaded and applied (headlines / body)
+- [x] **FOUN-01**: TanStack Start project scaffolded with Cloudflare Workers support
+- [x] **FOUN-02**: Tailwind CSS v4 configured with full Neon Monolith design token system
+- [x] **FOUN-03**: Space Grotesk and Inter fonts loaded and applied (headlines / body)
 - [ ] **FOUN-04**: Root layout with Shell, Header (nav links), Footer, and ScanlineOverlay
 - [ ] **FOUN-05**: TanStack Router configured with all 5 routes
-- [ ] **FOUN-06**: Vite config and wrangler.jsonc with Cloudflare bindings (AI, D1, KV, R2)
+- [x] **FOUN-06**: Vite config and wrangler.jsonc with Cloudflare bindings (AI, D1, KV, R2)
 
 ### UI Components
 
@@ -140,12 +140,12 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| FOUN-01 | Phase 1 | Pending |
-| FOUN-02 | Phase 1 | Pending |
-| FOUN-03 | Phase 1 | Pending |
+| FOUN-01 | Phase 1 | Complete |
+| FOUN-02 | Phase 1 | Complete |
+| FOUN-03 | Phase 1 | Complete |
 | FOUN-04 | Phase 1 | Pending |
 | FOUN-05 | Phase 1 | Pending |
-| FOUN-06 | Phase 1 | Pending |
+| FOUN-06 | Phase 1 | Complete |
 | UICM-01 | Phase 1 | Pending |
 | UICM-02 | Phase 1 | Pending |
 | UICM-03 | Phase 1 | Pending |
