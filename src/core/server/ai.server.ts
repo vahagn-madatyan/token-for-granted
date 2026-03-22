@@ -61,7 +61,7 @@ export async function generateTokenAnalysis(
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
       '@cf/meta/llama-3.1-8b-instruct-fast' as any,
       { messages, max_tokens: 512 },
-      { gateway: { id: env.AI_GATEWAY_ID, skipCache: false } }
+      { gateway: { id: env.AI_GATEWAY_ID, skipCache: false, authorization: `Bearer ${env.AI_GATEWAY_TOKEN}` } }
     )
 
     const text = typeof response === 'string'
@@ -82,7 +82,7 @@ export async function generateTokenAnalysis(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         '@cf/mistral/mistral-7b-instruct-v0.2' as any,
         { messages, max_tokens: 512 },
-        { gateway: { id: env.AI_GATEWAY_ID, skipCache: false } }
+        { gateway: { id: env.AI_GATEWAY_ID, skipCache: false, authorization: `Bearer ${env.AI_GATEWAY_TOKEN}` } }
       )
 
       const text = typeof response === 'string'
