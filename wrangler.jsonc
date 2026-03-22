@@ -9,14 +9,14 @@
     {
       "binding": "DB",
       "database_name": "token-for-granted-db",
-      "database_id": "placeholder-create-via-wrangler-d1-create",
+      "database_id": "REPLACE_WITH_D1_DATABASE_ID",
       "migrations_dir": "migrations"
     }
   ],
   "kv_namespaces": [
     {
       "binding": "KV",
-      "id": "placeholder-create-via-wrangler-kv-namespace-create"
+      "id": "REPLACE_WITH_KV_NAMESPACE_ID"
     }
   ],
   "r2_buckets": [
