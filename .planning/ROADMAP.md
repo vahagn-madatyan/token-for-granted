@@ -49,7 +49,7 @@ Plans:
 **Plans**: 3 plans
 
 Plans:
-- [ ] 02-01-PLAN.md -- Backend infrastructure: types, Zod schemas, D1 migration, DB/KV/AI server helpers, TanStack server functions
+- [x] 02-01-PLAN.md -- Backend infrastructure: types, Zod schemas, D1 migration, DB/KV/AI server helpers, TanStack server functions
 - [ ] 02-02-PLAN.md -- Tactical Entry Protocol screen: system metrics, AI pulse, category selector, token input, form submission
 - [ ] 02-03-PLAN.md -- Tactical Reveal screen: asset card, value cards, AI engine metrics, multiplier effect, data loading
 

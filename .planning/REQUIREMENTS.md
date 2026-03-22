@@ -81,19 +81,19 @@
 
 ### Database & Server
 
-- [ ] **DATA-01**: D1 database created with valuations, scenario_runs, terminal_logs, system_metrics tables
-- [ ] **DATA-02**: Server functions for creating/reading valuations (CRUD)
-- [ ] **DATA-03**: Server functions for creating/reading scenario runs
-- [ ] **DATA-04**: KV cache layer with 1hr TTL on AI responses
-- [ ] **DATA-05**: Zod validation schemas for all server function inputs
+- [x] **DATA-01**: D1 database created with valuations, scenario_runs, terminal_logs, system_metrics tables
+- [x] **DATA-02**: Server functions for creating/reading valuations (CRUD)
+- [x] **DATA-03**: Server functions for creating/reading scenario runs
+- [x] **DATA-04**: KV cache layer with 1hr TTL on AI responses
+- [x] **DATA-05**: Zod validation schemas for all server function inputs
 
 ### AI Integration
 
-- [ ] **AI-01**: Workers AI integration via AI Gateway with `@cf/meta/llama-3.1-8b-instruct-fast`
-- [ ] **AI-02**: Valuation prompt engineering returning structured JSON (value, projection, confidence, tier, density)
-- [ ] **AI-03**: Scenario generation prompts for all 3 What If experiments
-- [ ] **AI-04**: Fallback to `@cf/mistral/mistral-7b-instruct-v0.2` on primary model failure
-- [ ] **AI-05**: AI responses feel semi-real -- reasonable analysis wrapped in tactical aesthetic
+- [x] **AI-01**: Workers AI integration via AI Gateway with `@cf/meta/llama-3.1-8b-instruct-fast`
+- [x] **AI-02**: Valuation prompt engineering returning structured JSON (value, projection, confidence, tier, density)
+- [x] **AI-03**: Scenario generation prompts for all 3 What If experiments
+- [x] **AI-04**: Fallback to `@cf/mistral/mistral-7b-instruct-v0.2` on primary model failure
+- [x] **AI-05**: AI responses feel semi-real -- reasonable analysis wrapped in tactical aesthetic
 
 ### Deploy & Polish
 
@@ -193,16 +193,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TRM-06 | Phase 3 | Pending |
 | TRM-07 | Phase 3 | Pending |
 | TRM-08 | Phase 3 | Pending |
-| DATA-01 | Phase 2 | Pending |
-| DATA-02 | Phase 2 | Pending |
-| DATA-03 | Phase 2 | Pending |
-| DATA-04 | Phase 2 | Pending |
-| DATA-05 | Phase 2 | Pending |
-| AI-01 | Phase 2 | Pending |
-| AI-02 | Phase 2 | Pending |
-| AI-03 | Phase 2 | Pending |
-| AI-04 | Phase 2 | Pending |
-| AI-05 | Phase 2 | Pending |
+| DATA-01 | Phase 2 | Complete |
+| DATA-02 | Phase 2 | Complete |
+| DATA-03 | Phase 2 | Complete |
+| DATA-04 | Phase 2 | Complete |
+| DATA-05 | Phase 2 | Complete |
+| AI-01 | Phase 2 | Complete |
+| AI-02 | Phase 2 | Complete |
+| AI-03 | Phase 2 | Complete |
+| AI-04 | Phase 2 | Complete |
+| AI-05 | Phase 2 | Complete |
 | DEPL-01 | Phase 4 | Pending |
 | DEPL-02 | Phase 4 | Pending |
 | DEPL-03 | Phase 4 | Pending |
