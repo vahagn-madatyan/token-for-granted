@@ -28,7 +28,7 @@ Decimal phases appear between their surrounding integers in numeric order.
   2. Space Grotesk renders on headlines and Inter renders on body text throughout the shell
   3. Every UI component (GlitchText, NeonButton, HexCard, MetricDisplay, TierBadge, StatusIndicator, ProgressBar, TokenInput, TerminalLog) renders with correct Neon Monolith colors and tonal surface shifts (no 1px borders)
   4. Animation hooks work: GlitchText shows clip-path color channel shift, MetricDisplay counts up numbers, useTypewriter reveals text character-by-character
-**Plans:** 3/4 plans executed
+**Plans:** 4 plans
 
 Plans:
 - [x] 01-01-PLAN.md -- Scaffold TanStack Start project, Tailwind v4 with Neon Monolith tokens, fonts, CSS effects
@@ -46,12 +46,12 @@ Plans:
   3. After submission, the Valuation Reveal screen at `/valuation/$assetId` displays the asset card with current value, projected value, growth percentage, AI engine confidence scores, multiplier effect categories, and asset metadata
   4. AI responses are cached in KV with 1hr TTL so repeat lookups for the same asset are instant
   5. If the primary AI model fails, the system falls back to the Mistral model without user-visible errors
-**Plans**: TBD
+**Plans**: 3 plans
 
 Plans:
-- [ ] 02-01: TBD
-- [ ] 02-02: TBD
-- [ ] 02-03: TBD
+- [ ] 02-01-PLAN.md -- Backend infrastructure: types, Zod schemas, D1 migration, DB/KV/AI server helpers, TanStack server functions
+- [ ] 02-02-PLAN.md -- Tactical Entry Protocol screen: system metrics, AI pulse, category selector, token input, form submission
+- [ ] 02-03-PLAN.md -- Tactical Reveal screen: asset card, value cards, AI engine metrics, multiplier effect, data loading
 
 ### Phase 3: Remaining Screens
 **Goal**: All three remaining screens (Value Matrix, What If Lab, Tactical Terminal) are pixel-perfect and fully functional with AI-generated scenarios and animated terminal output
@@ -92,7 +92,7 @@ Phases execute in numeric order: 1 -> 2 -> 3 -> 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Design System and Component Library | 3/4 | In Progress|  |
-| 2. Primary Valuation Pipeline | 0/3 | Not started | - |
+| 1. Design System and Component Library | 4/4 | Complete |  |
+| 2. Primary Valuation Pipeline | 0/3 | Planned | - |
 | 3. Remaining Screens | 0/3 | Not started | - |
 | 4. Polish and Production Deploy | 0/2 | Not started | - |
