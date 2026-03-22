@@ -1,15 +1,5 @@
-import { getEvent } from 'vinxi/http'
+import { env } from 'cloudflare:workers'
 import type { Valuation } from '~/core/types'
-
-function getEnv() {
-  const event = getEvent()
-  return (event as any).context.cloudflare.env as {
-    DB: D1Database
-    KV: KVNamespace
-    AI: any
-    AI_GATEWAY_ID: string
-  }
-}
 
 /**
  * Insert a new valuation record with description and category.
@@ -20,7 +10,7 @@ export async function insertValuation(
   category: string
 ): Promise<string> {
   const id = crypto.randomUUID()
-  await getEnv().DB.prepare(
+  await env.DB.prepare(
     `INSERT INTO valuations (id, description, category, auth_status) VALUES (?, ?, ?, 'PENDING')`
   )
     .bind(id, description, category)
@@ -34,7 +24,7 @@ export async function insertValuation(
 export async function getValuationById(
   id: string
 ): Promise<Valuation | null> {
-  const result = await getEnv().DB.prepare(
+  const result = await env.DB.prepare(
     `SELECT * FROM valuations WHERE id = ?`
   )
     .bind(id)
@@ -63,7 +53,7 @@ export async function updateValuationWithAI(
     ai_raw_response: string
   }
 ): Promise<void> {
-  await getEnv().DB.prepare(
+  await env.DB.prepare(
     `UPDATE valuations SET
       current_value = ?,
       projected_value = ?,
@@ -103,7 +93,7 @@ export async function updateValuationWithAI(
  * List all valuations ordered by created_at DESC, limited to 50.
  */
 export async function listValuations(): Promise<Valuation[]> {
-  const result = await getEnv().DB.prepare(
+  const result = await env.DB.prepare(
     `SELECT * FROM valuations ORDER BY created_at DESC LIMIT 50`
   ).all<Valuation>()
   return result.results

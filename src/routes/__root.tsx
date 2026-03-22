@@ -26,7 +26,7 @@ export const Route = createRootRoute({
         content: 'width=device-width, initial-scale=1',
       },
       ...seo({
-        title: 'TOKEN FOR GRANTED // TACTICAL ARCANA',
+        title: 'TOKEN FOR GRANTED',
         description:
           'A Valorant-themed tactical asset valuation dashboard with AI-powered analysis.',
       }),
