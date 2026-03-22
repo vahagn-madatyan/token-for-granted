@@ -50,13 +50,13 @@
 
 ### Screen 3 -- Tactical Reveal
 
-- [ ] **REV-01**: Valuation detail page at `/valuation/$assetId` matching Stitch design pixel-perfectly
-- [ ] **REV-02**: Asset Containment Unit header with breadcrumb navigation
-- [ ] **REV-03**: Asset card showing current value, projected value (growth %), and asset image
-- [ ] **REV-04**: "What If Potential Scale" progress bar with projected dollar value
-- [ ] **REV-05**: AI engine metrics section showing model confidence scores (GPT-4S, Claude 3.5, Llama 2.1)
-- [ ] **REV-06**: The Multiplier Effect section with category cards (Indie Games, Art Vaults, Narratives)
-- [ ] **REV-07**: Asset metadata (name, art edition, code identifier)
+- [x] **REV-01**: Valuation detail page at `/valuation/$assetId` matching Stitch design pixel-perfectly
+- [x] **REV-02**: Asset Containment Unit header with breadcrumb navigation
+- [x] **REV-03**: Asset card showing current value, projected value (growth %), and asset image
+- [x] **REV-04**: "What If Potential Scale" progress bar with projected dollar value
+- [x] **REV-05**: AI engine metrics section showing model confidence scores (GPT-4S, Claude 3.5, Llama 2.1)
+- [x] **REV-06**: The Multiplier Effect section with category cards (Indie Games, Art Vaults, Narratives)
+- [x] **REV-07**: Asset metadata (name, art edition, code identifier)
 
 ### Screen 4 -- What If Lab
 
@@ -171,13 +171,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | VAL-03 | Phase 3 | Pending |
 | VAL-04 | Phase 3 | Pending |
 | VAL-05 | Phase 3 | Pending |
-| REV-01 | Phase 2 | Pending |
-| REV-02 | Phase 2 | Pending |
-| REV-03 | Phase 2 | Pending |
-| REV-04 | Phase 2 | Pending |
-| REV-05 | Phase 2 | Pending |
-| REV-06 | Phase 2 | Pending |
-| REV-07 | Phase 2 | Pending |
+| REV-01 | Phase 2 | Complete |
+| REV-02 | Phase 2 | Complete |
+| REV-03 | Phase 2 | Complete |
+| REV-04 | Phase 2 | Complete |
+| REV-05 | Phase 2 | Complete |
+| REV-06 | Phase 2 | Complete |
+| REV-07 | Phase 2 | Complete |
 | WIF-01 | Phase 3 | Pending |
 | WIF-02 | Phase 3 | Pending |
 | WIF-03 | Phase 3 | Pending |
