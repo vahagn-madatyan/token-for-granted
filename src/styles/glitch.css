@@ -90,3 +90,9 @@
 .animate-bracket-in {
   animation: bracketIn 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
 }
+
+/* Progress bar load animation */
+@keyframes progressLoad {
+  0% { transform: translateX(-100%); }
+  100% { transform: translateX(0); }
+}
