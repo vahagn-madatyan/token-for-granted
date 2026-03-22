@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 533" width="400" height="533">
+  <defs>
+    <pattern id="hex-luxury" width="30" height="52" patternUnits="userSpaceOnUse">
+      <polygon points="15,0 30,13 30,39 15,52 0,39 0,13" fill="none" stroke="#f0bf5c" stroke-width="0.5" opacity="0.15"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="533" fill="#060e20"/>
+  <rect width="400" height="533" fill="url(#hex-luxury)"/>
+  <!-- Gem shape -->
+  <polygon points="200,130 260,200 240,350 160,350 140,200" fill="none" stroke="#f0bf5c" stroke-width="2" opacity="0.6"/>
+  <line x1="200" y1="130" x2="200" y2="350" stroke="#f0bf5c" stroke-width="1" opacity="0.3"/>
+  <line x1="140" y1="200" x2="240" y2="350" stroke="#f0bf5c" stroke-width="0.5" opacity="0.2"/>
+  <line x1="260" y1="200" x2="160" y2="350" stroke="#f0bf5c" stroke-width="0.5" opacity="0.2"/>
+  <line x1="140" y1="200" x2="260" y2="200" stroke="#f0bf5c" stroke-width="1" opacity="0.4"/>
+  <polygon points="200,180 230,200 200,310 170,200" fill="#f0bf5c" opacity="0.06"/>
+  <text x="200" y="490" text-anchor="middle" font-family="monospace" font-size="14" fill="#f0bf5c" opacity="0.6">LUXURY</text>
+</svg>

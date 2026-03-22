@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 533" width="400" height="533">
+  <defs>
+    <pattern id="hex-other" width="30" height="52" patternUnits="userSpaceOnUse">
+      <polygon points="15,0 30,13 30,39 15,52 0,39 0,13" fill="none" stroke="#a3aac4" stroke-width="0.5" opacity="0.15"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="533" fill="#060e20"/>
+  <rect width="400" height="533" fill="url(#hex-other)"/>
+  <!-- Cube shape (isometric) -->
+  <polygon points="200,150 280,200 280,310 200,360 120,310 120,200" fill="none" stroke="#a3aac4" stroke-width="2" opacity="0.6"/>
+  <line x1="200" y1="150" x2="200" y2="360" stroke="#a3aac4" stroke-width="1" opacity="0.3"/>
+  <line x1="120" y1="200" x2="280" y2="310" stroke="#a3aac4" stroke-width="0.5" opacity="0.2"/>
+  <line x1="280" y1="200" x2="120" y2="310" stroke="#a3aac4" stroke-width="0.5" opacity="0.2"/>
+  <polygon points="200,150 280,200 200,255 120,200" fill="#a3aac4" opacity="0.06"/>
+  <polygon points="200,255 280,200 280,310 200,360" fill="#a3aac4" opacity="0.04"/>
+  <text x="200" y="490" text-anchor="middle" font-family="monospace" font-size="14" fill="#a3aac4" opacity="0.6">OTHER</text>
+</svg>

@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 533" width="400" height="533">
+  <defs>
+    <pattern id="hex-tech" width="30" height="52" patternUnits="userSpaceOnUse">
+      <polygon points="15,0 30,13 30,39 15,52 0,39 0,13" fill="none" stroke="#deffab" stroke-width="0.5" opacity="0.15"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="533" fill="#060e20"/>
+  <rect width="400" height="533" fill="url(#hex-tech)"/>
+  <!-- Circuit shape -->
+  <rect x="140" y="180" width="120" height="120" rx="8" fill="none" stroke="#deffab" stroke-width="2" opacity="0.6"/>
+  <circle cx="200" cy="240" r="25" fill="none" stroke="#deffab" stroke-width="1.5" opacity="0.4"/>
+  <!-- Circuit traces -->
+  <line x1="200" y1="180" x2="200" y2="140" stroke="#deffab" stroke-width="1" opacity="0.4"/>
+  <line x1="200" y1="300" x2="200" y2="340" stroke="#deffab" stroke-width="1" opacity="0.4"/>
+  <line x1="140" y1="240" x2="100" y2="240" stroke="#deffab" stroke-width="1" opacity="0.4"/>
+  <line x1="260" y1="240" x2="300" y2="240" stroke="#deffab" stroke-width="1" opacity="0.4"/>
+  <line x1="155" y1="195" x2="125" y2="165" stroke="#deffab" stroke-width="1" opacity="0.3"/>
+  <line x1="245" y1="195" x2="275" y2="165" stroke="#deffab" stroke-width="1" opacity="0.3"/>
+  <line x1="155" y1="285" x2="125" y2="315" stroke="#deffab" stroke-width="1" opacity="0.3"/>
+  <line x1="245" y1="285" x2="275" y2="315" stroke="#deffab" stroke-width="1" opacity="0.3"/>
+  <rect x="155" y="195" width="90" height="90" fill="#deffab" opacity="0.05"/>
+  <text x="200" y="490" text-anchor="middle" font-family="monospace" font-size="14" fill="#deffab" opacity="0.6">TECH</text>
+</svg>

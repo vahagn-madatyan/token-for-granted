@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 533" width="400" height="533">
+  <defs>
+    <pattern id="hex-art" width="30" height="52" patternUnits="userSpaceOnUse">
+      <polygon points="15,0 30,13 30,39 15,52 0,39 0,13" fill="none" stroke="#ff59e3" stroke-width="0.5" opacity="0.15"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="533" fill="#060e20"/>
+  <rect width="400" height="533" fill="url(#hex-art)"/>
+  <!-- Brush shape -->
+  <rect x="185" y="120" width="30" height="200" rx="4" fill="none" stroke="#ff59e3" stroke-width="2" opacity="0.6"/>
+  <path d="M170,320 L200,400 L230,320" fill="none" stroke="#ff59e3" stroke-width="2" opacity="0.6"/>
+  <ellipse cx="200" cy="115" rx="25" ry="12" fill="none" stroke="#ff59e3" stroke-width="1.5" opacity="0.4"/>
+  <rect x="190" y="140" width="20" height="160" fill="#ff59e3" opacity="0.08"/>
+  <text x="200" y="490" text-anchor="middle" font-family="monospace" font-size="14" fill="#ff59e3" opacity="0.6">ART</text>
+</svg>

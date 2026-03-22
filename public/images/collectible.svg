@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 533" width="400" height="533">
+  <defs>
+    <pattern id="hex-collectible" width="30" height="52" patternUnits="userSpaceOnUse">
+      <polygon points="15,0 30,13 30,39 15,52 0,39 0,13" fill="none" stroke="#00eefc" stroke-width="0.5" opacity="0.15"/>
+    </pattern>
+  </defs>
+  <rect width="400" height="533" fill="#060e20"/>
+  <rect width="400" height="533" fill="url(#hex-collectible)"/>
+  <!-- Diamond shape -->
+  <polygon points="200,120 300,266 200,413 100,266" fill="none" stroke="#00eefc" stroke-width="2" opacity="0.6"/>
+  <polygon points="200,160 270,266 200,373 130,266" fill="none" stroke="#00eefc" stroke-width="1" opacity="0.3"/>
+  <polygon points="200,200 240,266 200,333 160,266" fill="#00eefc" opacity="0.08"/>
+  <text x="200" y="490" text-anchor="middle" font-family="monospace" font-size="14" fill="#00eefc" opacity="0.6">COLLECTIBLE</text>
+</svg>
