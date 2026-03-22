@@ -1,0 +1,32 @@
+{
+  "$schema": "node_modules/wrangler/config-schema.json",
+  "name": "token-for-granted",
+  "compatibility_date": "2026-03-17",
+  "compatibility_flags": ["nodejs_compat"],
+  "main": "@tanstack/react-start/server-entry",
+  "ai": { "binding": "AI" },
+  "d1_databases": [
+    {
+      "binding": "DB",
+      "database_name": "token-for-granted-db",
+      "database_id": "placeholder-create-via-wrangler-d1-create",
+      "migrations_dir": "migrations"
+    }
+  ],
+  "kv_namespaces": [
+    {
+      "binding": "KV",
+      "id": "placeholder-create-via-wrangler-kv-namespace-create"
+    }
+  ],
+  "r2_buckets": [
+    {
+      "binding": "ASSETS_BUCKET",
+      "bucket_name": "token-for-granted-assets"
+    }
+  ],
+  "vars": {
+    "AI_GATEWAY_ID": "token-for-granted-gateway",
+    "ENVIRONMENT": "production"
+  }
+}
