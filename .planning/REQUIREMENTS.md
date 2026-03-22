@@ -32,13 +32,13 @@
 
 ### Screen 1 -- Tactical Entry Protocol
 
-- [ ] **ENT-01**: Landing page at `/` matching Stitch design pixel-perfectly
-- [ ] **ENT-02**: System metrics cards (84.2 T-FLOPS, 1.4M ARC, +2.4%, 12ms) with count-up animation
-- [ ] **ENT-03**: Token input form with asset description field and category selection
-- [ ] **ENT-04**: AI Pulse status indicator showing "SYNCHRONIZED" state
-- [ ] **ENT-05**: "INITIATE PROTOCOL" submit button triggers valuation flow
-- [ ] **ENT-06**: System assets panel showing RARE_ASSET_1 and CORE_TOKEN status
-- [ ] **ENT-07**: Background watermark text "ENTRY_PRTCL" with reduced opacity
+- [x] **ENT-01**: Landing page at `/` matching Stitch design pixel-perfectly
+- [x] **ENT-02**: System metrics cards (84.2 T-FLOPS, 1.4M ARC, +2.4%, 12ms) with count-up animation
+- [x] **ENT-03**: Token input form with asset description field and category selection
+- [x] **ENT-04**: AI Pulse status indicator showing "SYNCHRONIZED" state
+- [x] **ENT-05**: "INITIATE PROTOCOL" submit button triggers valuation flow
+- [x] **ENT-06**: System assets panel showing RARE_ASSET_1 and CORE_TOKEN status
+- [x] **ENT-07**: Background watermark text "ENTRY_PRTCL" with reduced opacity
 
 ### Screen 2 -- Tactical Value Matrix
 
@@ -159,13 +159,13 @@ Which phases cover which requirements. Updated during roadmap creation.
 | UICM-11 | Phase 1 | Complete |
 | UICM-12 | Phase 1 | Complete |
 | UICM-13 | Phase 1 | Complete |
-| ENT-01 | Phase 2 | Pending |
-| ENT-02 | Phase 2 | Pending |
-| ENT-03 | Phase 2 | Pending |
-| ENT-04 | Phase 2 | Pending |
-| ENT-05 | Phase 2 | Pending |
-| ENT-06 | Phase 2 | Pending |
-| ENT-07 | Phase 2 | Pending |
+| ENT-01 | Phase 2 | Complete |
+| ENT-02 | Phase 2 | Complete |
+| ENT-03 | Phase 2 | Complete |
+| ENT-04 | Phase 2 | Complete |
+| ENT-05 | Phase 2 | Complete |
+| ENT-06 | Phase 2 | Complete |
+| ENT-07 | Phase 2 | Complete |
 | VAL-01 | Phase 3 | Pending |
 | VAL-02 | Phase 3 | Pending |
 | VAL-03 | Phase 3 | Pending |
