@@ -70,14 +70,14 @@
 
 ### Screen 5 -- Tactical Terminal
 
-- [ ] **TRM-01**: Terminal page at `/terminal` matching Stitch design pixel-perfectly
-- [ ] **TRM-02**: Command console with timestamped, color-coded log entries (INFO, WARNING, CRITICAL)
-- [ ] **TRM-03**: Boot sequence animation on first visit (sequential log appearance)
-- [ ] **TRM-04**: System Health panel with processor load and compute indicators
-- [ ] **TRM-05**: Token Latency panel with real-time-feeling metrics
-- [ ] **TRM-06**: Node Connections panel showing global connection status (Paris, Seoul, NYC, etc.)
-- [ ] **TRM-07**: Command input field with "EXECUTE LINK" button
-- [ ] **TRM-08**: Sidebar icons for section navigation (Dashboard, Analytics, Terminal, Patrol)
+- [x] **TRM-01**: Terminal page at `/terminal` matching Stitch design pixel-perfectly
+- [x] **TRM-02**: Command console with timestamped, color-coded log entries (INFO, WARNING, CRITICAL)
+- [x] **TRM-03**: Boot sequence animation on first visit (sequential log appearance)
+- [x] **TRM-04**: System Health panel with processor load and compute indicators
+- [x] **TRM-05**: Token Latency panel with real-time-feeling metrics
+- [x] **TRM-06**: Node Connections panel showing global connection status (Paris, Seoul, NYC, etc.)
+- [x] **TRM-07**: Command input field with "EXECUTE LINK" button
+- [x] **TRM-08**: Sidebar icons for section navigation (Dashboard, Analytics, Terminal, Patrol)
 
 ### Database & Server
 
@@ -185,14 +185,14 @@ Which phases cover which requirements. Updated during roadmap creation.
 | WIF-05 | Phase 3 | Pending |
 | WIF-06 | Phase 3 | Pending |
 | WIF-07 | Phase 3 | Pending |
-| TRM-01 | Phase 3 | Pending |
-| TRM-02 | Phase 3 | Pending |
-| TRM-03 | Phase 3 | Pending |
-| TRM-04 | Phase 3 | Pending |
-| TRM-05 | Phase 3 | Pending |
-| TRM-06 | Phase 3 | Pending |
-| TRM-07 | Phase 3 | Pending |
-| TRM-08 | Phase 3 | Pending |
+| TRM-01 | Phase 3 | Complete |
+| TRM-02 | Phase 3 | Complete |
+| TRM-03 | Phase 3 | Complete |
+| TRM-04 | Phase 3 | Complete |
+| TRM-05 | Phase 3 | Complete |
+| TRM-06 | Phase 3 | Complete |
+| TRM-07 | Phase 3 | Complete |
+| TRM-08 | Phase 3 | Complete |
 | DATA-01 | Phase 2 | Complete |
 | DATA-02 | Phase 2 | Complete |
 | DATA-03 | Phase 2 | Complete |
