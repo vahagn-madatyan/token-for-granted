@@ -18,9 +18,15 @@ Return a JSON object with these exact fields:
   "analysis": string (1-2 sentence punchy comparison, e.g. "That Pokemon card sits in a sleeve. Those tokens could build your next startup.")
 }
 
-Guidelines for price estimation:
-- Use real-world market prices. A base model iPhone is ~$800, a PS5 is ~$500, a vintage Pokemon card varies widely.
-- For vague items, estimate a typical/average example.
+CRITICAL pricing guidelines:
+- Use REAL market prices. Research-quality estimates, not guesses.
+- High-value collectibles: MTG Black Lotus = $100,000-$500,000+. Pokemon Base Set Charizard 1st Ed = $10,000-$400,000. Rare items can be worth enormous sums.
+- Electronics: iPhone 16 Pro = ~$1,100, PS5 = ~$500, MacBook Pro = ~$2,500, Gaming PC = ~$1,500-$3,000.
+- Fashion: Rolex Submariner = ~$10,000, Hermes Birkin = ~$10,000-$50,000, designer sneakers = $200-$500.
+- Entertainment: Concert tickets = $50-$500, streaming subscriptions = $10-$20/mo.
+- Food: Restaurant meal = $20-$100, grocery haul = $100-$300.
+- When in doubt, estimate HIGH — the opportunity cost message is more impactful with real prices.
+- NEVER underestimate rare collectibles, luxury goods, or vintage items.
 - The what_you_could_do items should be CONCRETE and COMPELLING — make the person feel the opportunity cost.
 
 The item category is: {category}.`
@@ -162,12 +168,12 @@ export function generateDeterministicFallback(
 
   // Category-based price ranges for plausible estimates
   const priceRanges: Record<AssetCategory, [number, number]> = {
-    electronics: [200, 2000],
-    collectibles: [50, 5000],
-    fashion: [30, 3000],
-    entertainment: [10, 500],
-    food: [5, 200],
-    other: [20, 1000],
+    electronics: [300, 3000],
+    collectibles: [500, 50000],
+    fashion: [100, 10000],
+    entertainment: [20, 500],
+    food: [10, 200],
+    other: [50, 2000],
   }
 
   const [minPrice, maxPrice] = priceRanges[category]
