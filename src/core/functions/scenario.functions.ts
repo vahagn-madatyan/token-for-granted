@@ -1,5 +1,6 @@
 import { createServerFn } from '@tanstack/react-start'
 import { env } from 'cloudflare:workers'
+import OpenAI from 'openai'
 import { runScenarioSchema } from '~/core/schemas'
 import { calculateTokenConversions, formatTokenCount, getBestValueProvider } from '~/core/token-pricing'
 
@@ -81,55 +82,29 @@ export const runScenario = createServerFn({ method: 'POST' })
       },
     ]
 
-    const gwOpts = { gateway: { id: env.AI_GATEWAY_ID, skipCache: false, authorization: `Bearer ${env.AI_GATEWAY_TOKEN}` } }
-
-    // 1. Try primary model via AI Gateway
+    // 1. Call AI Gateway via OpenAI-compat endpoint with dynamic route
     try {
-      const response = await env.AI.run(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        '@cf/meta/llama-3.1-8b-instruct-fast' as any,
-        { messages, max_tokens: 512 },
-        gwOpts
-      )
+      const client = new OpenAI({
+        apiKey: env.AI_GATEWAY_TOKEN,
+        baseURL: `https://gateway.ai.cloudflare.com/v1/${env.CLOUDFLARE_ACCOUNT_ID}/${env.AI_GATEWAY_ID}/compat`,
+      })
 
-      const text = typeof response === 'string'
-        ? response
-        : 'response' in response
-          ? (response.response ?? '')
-          : ''
+      const completion = await client.chat.completions.create({
+        model: 'dynamic/token-analysis',
+        messages,
+        max_tokens: 512,
+      })
 
+      const text = completion.choices?.[0]?.message?.content ?? ''
       const parsed = parseScenarioResponse(text)
       if (parsed) {
         return { ...parsed, itemName, itemPrice }
       }
     } catch {
-      // Primary failed
+      // Dynamic route failed (budget exceeded, models down)
     }
 
-    // 2. Try fallback model
-    try {
-      const response = await env.AI.run(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        '@cf/mistral/mistral-7b-instruct-v0.2' as any,
-        { messages, max_tokens: 512 },
-        gwOpts
-      )
-
-      const text = typeof response === 'string'
-        ? response
-        : 'response' in response
-          ? (response.response ?? '')
-          : ''
-
-      const parsed = parseScenarioResponse(text)
-      if (parsed) {
-        return { ...parsed, itemName, itemPrice }
-      }
-    } catch {
-      // Fallback also failed
-    }
-
-    // 3. Deterministic fallback
+    // 2. Deterministic fallback
     const fallback = generateFallbackScenario(itemName, itemPrice)
     return { ...fallback, itemName, itemPrice }
   })

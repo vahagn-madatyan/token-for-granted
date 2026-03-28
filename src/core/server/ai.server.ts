@@ -1,4 +1,5 @@
 import { env } from 'cloudflare:workers'
+import OpenAI from 'openai'
 import type { AITokenAnalysisResponse, AssetCategory, Tier } from '~/core/types'
 import { computeCacheKey, getCachedValuation, setCachedValuation } from './cache.server'
 
@@ -32,8 +33,22 @@ CRITICAL pricing guidelines:
 The item category is: {category}.`
 
 /**
+ * Create an OpenAI client pointing at the AI Gateway compat endpoint.
+ * This enables dynamic routing, budget caps, and unified billing.
+ */
+function getGatewayClient() {
+  return new OpenAI({
+    apiKey: env.AI_GATEWAY_TOKEN,
+    baseURL: `https://gateway.ai.cloudflare.com/v1/${env.CLOUDFLARE_ACCOUNT_ID}/${env.AI_GATEWAY_ID}/compat`,
+  })
+}
+
+/**
  * Generate a token analysis for a given item description and category.
- * Uses 3-tier fallback: Llama -> Mistral -> deterministic.
+ * Uses AI Gateway dynamic route "token-analysis" which handles:
+ * - $10/month budget cap
+ * - Model fallback: Llama 3.1 8B → Mistral 7B
+ * Falls back to deterministic data if gateway/budget fails.
  * Results are cached in KV with 1-hour TTL.
  */
 export async function generateTokenAnalysis(
@@ -48,62 +63,34 @@ export async function generateTokenAnalysis(
   }
 
   const systemPrompt = TOKEN_ANALYSIS_SYSTEM_PROMPT.replace('{category}', category)
-  const messages = [
-    { role: 'system' as const, content: systemPrompt },
-    { role: 'user' as const, content: `I want to buy: ${description}` },
-  ]
 
   let result: AITokenAnalysisResponse | null = null
-  const gwOpts = { gateway: { id: env.AI_GATEWAY_ID, skipCache: false, authorization: `Bearer ${env.AI_GATEWAY_TOKEN}` } }
 
-  // 2. Try primary model via AI Gateway ($10/mo budget cap enforced by gateway rate limiting)
+  // 2. Call AI Gateway via OpenAI-compat endpoint with dynamic route
+  //    Route handles: budget cap ($10/mo) → Llama 8B → (fallback) → Mistral 7B
   try {
-    const response = await env.AI.run(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      '@cf/meta/llama-3.1-8b-instruct-fast' as any,
-      { messages, max_tokens: 512 },
-      gwOpts
-    )
+    const client = getGatewayClient()
+    const completion = await client.chat.completions.create({
+      model: 'dynamic/token-analysis',
+      messages: [
+        { role: 'system', content: systemPrompt },
+        { role: 'user', content: `I want to buy: ${description}` },
+      ],
+      max_tokens: 512,
+    })
 
-    const text = typeof response === 'string'
-      ? response
-      : 'response' in response
-        ? response.response ?? ''
-        : ''
-
+    const text = completion.choices?.[0]?.message?.content ?? ''
     result = parseAIResponse(text)
-  } catch {
-    // Primary model failed
+  } catch (e) {
+    console.error('AI Gateway dynamic route failed:', e)
   }
 
-  // 3. Try fallback model
-  if (!result) {
-    try {
-      const response = await env.AI.run(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        '@cf/mistral/mistral-7b-instruct-v0.2' as any,
-        { messages, max_tokens: 512 },
-        gwOpts
-      )
-
-      const text = typeof response === 'string'
-        ? response
-        : 'response' in response
-          ? response.response ?? ''
-          : ''
-
-      result = parseAIResponse(text)
-    } catch {
-      // Fallback model also failed
-    }
-  }
-
-  // 4. Deterministic fallback if both models failed or budget exceeded
+  // 3. Deterministic fallback if gateway failed (budget exceeded, models down, etc.)
   if (!result) {
     result = generateDeterministicFallback(description, category)
   }
 
-  // 5. Cache the result
+  // 4. Cache the result
   await setCachedValuation(cacheKey, result)
 
   return result
@@ -115,13 +102,11 @@ export async function generateTokenAnalysis(
  */
 function parseAIResponse(text: string): AITokenAnalysisResponse | null {
   try {
-    // Try to extract JSON from the response (may be wrapped in markdown code blocks)
     const jsonMatch = text.match(/\{[\s\S]*\}/)
     if (!jsonMatch) return null
 
     const parsed = JSON.parse(jsonMatch[0])
 
-    // Validate required fields exist
     if (
       typeof parsed.item_name !== 'string' ||
       typeof parsed.item_price !== 'number' ||
@@ -152,13 +137,12 @@ function parseAIResponse(text: string): AITokenAnalysisResponse | null {
 
 /**
  * Generate deterministic but plausible token analysis from input hash.
- * Used as last-resort fallback when both AI models fail to produce valid JSON.
+ * Used as last-resort fallback when AI Gateway fails (budget exceeded, models down).
  */
 export function generateDeterministicFallback(
   description: string,
   category: AssetCategory
 ): AITokenAnalysisResponse {
-  // Simple string hash
   let hash = 0
   const input = description + category
   for (let i = 0; i < input.length; i++) {
@@ -167,7 +151,6 @@ export function generateDeterministicFallback(
   }
   hash = Math.abs(hash)
 
-  // Category-based price ranges for plausible estimates
   const priceRanges: Record<AssetCategory, [number, number]> = {
     electronics: [300, 3000],
     collectibles: [500, 50000],
@@ -187,7 +170,6 @@ export function generateDeterministicFallback(
   else if (itemPrice > 200) tier = 'B'
   else tier = 'C'
 
-  // Clean up item name from description
   const itemName = description
     .split(/\s+/)
     .slice(0, 5)
