@@ -54,16 +54,15 @@ export async function generateTokenAnalysis(
   ]
 
   let result: AITokenAnalysisResponse | null = null
+  const gwOpts = { gateway: { id: env.AI_GATEWAY_ID, skipCache: false, authorization: `Bearer ${env.AI_GATEWAY_TOKEN}` } }
 
-  // 2. Call via AI Gateway dynamic route — handles model selection, fallback, and $10/mo budget cap
-  //    Route: Start → Budget($10/mo) → Llama 3.1 8B → (fallback) → Mistral 7B → End
+  // 2. Try primary model via AI Gateway ($10/mo budget cap enforced by gateway rate limiting)
   try {
     const response = await env.AI.run(
-      // Dynamic route name replaces model — gateway picks the model
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      'dynamic/token-analysis' as any,
+      '@cf/meta/llama-3.1-8b-instruct-fast' as any,
       { messages, max_tokens: 512 },
-      { gateway: { id: env.AI_GATEWAY_ID, skipCache: false, authorization: `Bearer ${env.AI_GATEWAY_TOKEN}` } }
+      gwOpts
     )
 
     const text = typeof response === 'string'
@@ -73,12 +72,33 @@ export async function generateTokenAnalysis(
         : ''
 
     result = parseAIResponse(text)
-  } catch (e) {
-    // Dynamic route failed (budget exceeded, both models down, etc.)
-    console.error('AI Gateway dynamic route failed:', e)
+  } catch {
+    // Primary model failed
   }
 
-  // 3. Deterministic fallback if dynamic route failed (budget exceeded or models unavailable)
+  // 3. Try fallback model
+  if (!result) {
+    try {
+      const response = await env.AI.run(
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        '@cf/mistral/mistral-7b-instruct-v0.2' as any,
+        { messages, max_tokens: 512 },
+        gwOpts
+      )
+
+      const text = typeof response === 'string'
+        ? response
+        : 'response' in response
+          ? response.response ?? ''
+          : ''
+
+      result = parseAIResponse(text)
+    } catch {
+      // Fallback model also failed
+    }
+  }
+
+  // 4. Deterministic fallback if both models failed or budget exceeded
   if (!result) {
     result = generateDeterministicFallback(description, category)
   }
