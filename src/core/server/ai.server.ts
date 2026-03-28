@@ -55,11 +55,13 @@ export async function generateTokenAnalysis(
 
   let result: AITokenAnalysisResponse | null = null
 
-  // 2. Try primary model (Llama)
+  // 2. Call via AI Gateway dynamic route — handles model selection, fallback, and $10/mo budget cap
+  //    Route: Start → Budget($10/mo) → Llama 3.1 8B → (fallback) → Mistral 7B → End
   try {
     const response = await env.AI.run(
+      // Dynamic route name replaces model — gateway picks the model
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
-      '@cf/meta/llama-3.1-8b-instruct-fast' as any,
+      'dynamic/token-analysis' as any,
       { messages, max_tokens: 512 },
       { gateway: { id: env.AI_GATEWAY_ID, skipCache: false, authorization: `Bearer ${env.AI_GATEWAY_TOKEN}` } }
     )
@@ -71,33 +73,12 @@ export async function generateTokenAnalysis(
         : ''
 
     result = parseAIResponse(text)
-  } catch {
-    // Primary model failed, try fallback
+  } catch (e) {
+    // Dynamic route failed (budget exceeded, both models down, etc.)
+    console.error('AI Gateway dynamic route failed:', e)
   }
 
-  // 3. Try fallback model (Mistral)
-  if (!result) {
-    try {
-      const response = await env.AI.run(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        '@cf/mistral/mistral-7b-instruct-v0.2' as any,
-        { messages, max_tokens: 512 },
-        { gateway: { id: env.AI_GATEWAY_ID, skipCache: false, authorization: `Bearer ${env.AI_GATEWAY_TOKEN}` } }
-      )
-
-      const text = typeof response === 'string'
-        ? response
-        : 'response' in response
-          ? response.response ?? ''
-          : ''
-
-      result = parseAIResponse(text)
-    } catch {
-      // Fallback model also failed
-    }
-  }
-
-  // 4. Deterministic fallback if both models failed
+  // 3. Deterministic fallback if dynamic route failed (budget exceeded or models unavailable)
   if (!result) {
     result = generateDeterministicFallback(description, category)
   }

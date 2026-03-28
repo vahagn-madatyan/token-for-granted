@@ -81,11 +81,11 @@ export const runScenario = createServerFn({ method: 'POST' })
       },
     ]
 
-    // 1. Try primary model (Llama)
+    // 1. Call via AI Gateway dynamic route — handles model fallback + $10/mo budget
     try {
       const response = await env.AI.run(
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        '@cf/meta/llama-3.1-8b-instruct-fast' as any,
+        'dynamic/token-analysis' as any,
         { messages, max_tokens: 512 },
         { gateway: { id: env.AI_GATEWAY_ID, skipCache: false, authorization: `Bearer ${env.AI_GATEWAY_TOKEN}` } }
       )
@@ -101,33 +101,10 @@ export const runScenario = createServerFn({ method: 'POST' })
         return { ...parsed, itemName, itemPrice }
       }
     } catch {
-      // Primary model failed, try fallback
+      // Dynamic route failed (budget exceeded, models unavailable)
     }
 
-    // 2. Try fallback model (Mistral)
-    try {
-      const response = await env.AI.run(
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        '@cf/mistral/mistral-7b-instruct-v0.2' as any,
-        { messages, max_tokens: 512 },
-        { gateway: { id: env.AI_GATEWAY_ID, skipCache: false, authorization: `Bearer ${env.AI_GATEWAY_TOKEN}` } }
-      )
-
-      const text = typeof response === 'string'
-        ? response
-        : 'response' in response
-          ? (response.response ?? '')
-          : ''
-
-      const parsed = parseScenarioResponse(text)
-      if (parsed) {
-        return { ...parsed, itemName, itemPrice }
-      }
-    } catch {
-      // Fallback model also failed
-    }
-
-    // 3. Deterministic fallback
+    // 2. Deterministic fallback
     const fallback = generateFallbackScenario(itemName, itemPrice)
     return { ...fallback, itemName, itemPrice }
   })
