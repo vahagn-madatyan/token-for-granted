@@ -1,4 +1,4 @@
-import { createFileRoute } from '@tanstack/react-router'
+import { createFileRoute, Link } from '@tanstack/react-router'
 import { motion } from 'motion/react'
 import { TierCard } from '~/components/screens/ranking/TierCard'
 import { TransformationLogic } from '~/components/screens/ranking/TransformationLogic'
@@ -8,8 +8,13 @@ import type { ValuationResult } from '~/core/types'
 
 export const Route = createFileRoute('/ranking')({
   loader: async () => {
-    const valuations = await listValuations({ data: { sortBy: 'price' } })
-    return { valuations }
+    try {
+      const valuations = await listValuations({ data: { sortBy: 'price' } })
+      return { valuations }
+    } catch {
+      // D1 table may not exist yet (first deploy) — return empty
+      return { valuations: [] as ValuationResult[] }
+    }
   },
   component: Ranking,
 })
@@ -47,19 +52,42 @@ function Ranking() {
 
       {/* Ranked Tier Grid */}
       {completedValuations.length === 0 ? (
-        <div className="flex flex-col items-center justify-center py-32 space-y-6">
-          <div className="font-headline text-4xl md:text-6xl font-black text-outline/20 uppercase tracking-tighter">
+        <motion.div
+          className="flex flex-col items-center justify-center py-20 md:py-32 space-y-8 relative"
+          variants={fadeInUp}
+          initial="hidden"
+          animate="visible"
+        >
+          {/* Ambient glow */}
+          <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+            <div className="w-80 h-80 bg-accent/5 rounded-full blur-[120px]" />
+          </div>
+
+          {/* Decorative grid lines */}
+          <div className="relative w-full max-w-md">
+            <div className="absolute inset-0 grid grid-cols-4 gap-4 opacity-[0.06]">
+              {Array.from({ length: 8 }).map((_, i) => (
+                <div key={i} className="h-24 bg-primary-container/30 border border-primary-container/10" />
+              ))}
+            </div>
+          </div>
+
+          <div className="font-headline text-4xl md:text-6xl font-black text-outline/15 uppercase tracking-tighter relative z-10">
             EMPTY MATRIX
           </div>
-          <p className="font-body text-on-surface-variant text-lg italic max-w-md text-center">
+          <p className="font-body text-on-surface-variant text-lg italic max-w-md text-center relative z-10 leading-relaxed">
             No conversions yet — be the first! Head to the{' '}
-            <span className="text-primary-container font-bold not-italic">
+            <Link to="/" className="text-primary-container font-bold not-italic hover:text-primary transition-colors">
               CONVERT
-            </span>{' '}
+            </Link>{' '}
             page and see what your next purchase is really worth in AI tokens.
           </p>
-          <div className="w-24 h-1 bg-primary-container/20" />
-        </div>
+          <div className="flex items-center gap-3 relative z-10">
+            <div className="w-8 h-[1px] bg-accent/20" />
+            <div className="w-2 h-2 bg-accent/30 rotate-45" />
+            <div className="w-8 h-[1px] bg-accent/20" />
+          </div>
+        </motion.div>
       ) : (
         <motion.div
           className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-32"

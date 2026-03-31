@@ -82,7 +82,10 @@ export async function generateTokenAnalysis(
     const text = completion.choices?.[0]?.message?.content ?? ''
     result = parseAIResponse(text)
   } catch (e) {
-    console.error('AI Gateway dynamic route failed:', e)
+    console.error(JSON.stringify({
+      msg: 'AI Gateway dynamic route failed',
+      error: e instanceof Error ? e.message : 'Unknown error',
+    }))
   }
 
   // 3. Deterministic fallback if gateway failed (budget exceeded, models down, etc.)

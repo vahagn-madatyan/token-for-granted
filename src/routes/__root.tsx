@@ -6,7 +6,6 @@ import {
   createRootRoute,
   useRouterState,
 } from '@tanstack/react-router'
-import { TanStackRouterDevtools } from '@tanstack/react-router-devtools'
 import { AnimatePresence, motion } from 'motion/react'
 import * as React from 'react'
 import { DefaultCatchBoundary } from '~/components/DefaultCatchBoundary'
@@ -14,6 +13,15 @@ import { NotFound } from '~/components/NotFound'
 import { Shell } from '~/components/layout/Shell'
 import appCss from '~/styles/app.css?url'
 import { seo } from '~/utils/seo'
+
+const TanStackRouterDevtools =
+  import.meta.env.PROD
+    ? () => null
+    : React.lazy(() =>
+        import('@tanstack/react-router-devtools').then((res) => ({
+          default: res.TanStackRouterDevtools,
+        }))
+      )
 
 export const Route = createRootRoute({
   head: () => ({
@@ -50,7 +58,9 @@ function RootDocument({ children }: { children: React.ReactNode }) {
       </head>
       <body>
         {children}
-        <TanStackRouterDevtools position="bottom-right" />
+        <React.Suspense>
+          <TanStackRouterDevtools position="bottom-right" />
+        </React.Suspense>
         <Scripts />
       </body>
     </html>

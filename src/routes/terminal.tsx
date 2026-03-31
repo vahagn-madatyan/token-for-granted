@@ -8,8 +8,13 @@ import { getRecentValuations } from '~/core/functions/valuation.functions'
 
 export const Route = createFileRoute('/terminal')({
   loader: async () => {
-    const valuations = await getRecentValuations({ data: { limit: 20 } })
-    return { valuations }
+    try {
+      const valuations = await getRecentValuations({ data: { limit: 20 } })
+      return { valuations }
+    } catch {
+      // D1 table may not exist yet — return empty
+      return { valuations: [] as Awaited<ReturnType<typeof getRecentValuations>> }
+    }
   },
   component: Terminal,
 })

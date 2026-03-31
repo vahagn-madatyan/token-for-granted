@@ -19,6 +19,10 @@
       "id": "b66d5c6d7559457eab9e05a3b92cda91"
     }
   ],
+  "observability": {
+    "enabled": true,
+    "head_sampling_rate": 1
+  },
   "vars": {
     "AI_GATEWAY_ID": "token-for-granted-gateway",
     "CLOUDFLARE_ACCOUNT_ID": "12b57a18e1b3877e0bb74e48e13a1a9f",
