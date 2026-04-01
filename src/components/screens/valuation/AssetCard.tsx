@@ -5,6 +5,7 @@ interface AssetCardProps {
   itemName: string
   category: AssetCategory
   tier: Tier | null
+  imageUrl?: string | null
 }
 
 const CATEGORY_ICONS: Record<AssetCategory, string> = {
@@ -16,7 +17,7 @@ const CATEGORY_ICONS: Record<AssetCategory, string> = {
   other: '\u{1F4E6}',
 }
 
-export function AssetCard({ itemName, category, tier }: AssetCardProps) {
+export function AssetCard({ itemName, category, tier, imageUrl }: AssetCardProps) {
   return (
     <div className="relative group">
       <div className="relative z-10 p-8 bg-surface-container-low clipped-tr border border-secondary/30 shadow-[0_0_50px_rgba(0,245,255,0.1)] backdrop-blur-md overflow-hidden">
@@ -26,11 +27,24 @@ export function AssetCard({ itemName, category, tier }: AssetCardProps) {
           style={{ animation: 'scanline 8s linear infinite' }}
         />
 
-        {/* Category icon - large centered */}
-        <div className="flex items-center justify-center aspect-square bg-surface-container-lowest border border-white/5">
-          <span className="text-[120px] md:text-[160px] opacity-80 select-none">
-            {CATEGORY_ICONS[category] || CATEGORY_ICONS.other}
-          </span>
+        {/* Product image or category icon fallback */}
+        <div className="flex items-center justify-center aspect-square bg-surface-container-lowest border border-white/5 overflow-hidden relative">
+          {imageUrl ? (
+            <img
+              src={imageUrl}
+              alt={itemName}
+              className="w-full h-full object-contain"
+            />
+          ) : (
+            <span className="text-[120px] md:text-[160px] opacity-80 select-none">
+              {CATEGORY_ICONS[category] || CATEGORY_ICONS.other}
+            </span>
+          )}
+          {/* Corner scan markers */}
+          <div className="absolute top-2 left-2 w-4 h-4 border-t border-l border-primary-container/30" />
+          <div className="absolute top-2 right-2 w-4 h-4 border-t border-r border-primary-container/30" />
+          <div className="absolute bottom-2 left-2 w-4 h-4 border-b border-l border-primary-container/30" />
+          <div className="absolute bottom-2 right-2 w-4 h-4 border-b border-r border-primary-container/30" />
         </div>
 
         {/* Metadata below */}

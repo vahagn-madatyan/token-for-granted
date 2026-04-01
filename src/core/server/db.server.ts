@@ -47,6 +47,7 @@ export async function updateValuationWithAI(
     what_you_could_do: string
     analysis: string
     ai_raw_response: string
+    image_url: string | null
   }
 ): Promise<void> {
   await env.DB.prepare(
@@ -59,6 +60,7 @@ export async function updateValuationWithAI(
       what_you_could_do = ?,
       analysis = ?,
       ai_raw_response = ?,
+      image_url = ?,
       auth_status = 'VERIFIED',
       updated_at = datetime('now')
     WHERE id = ?`
@@ -72,6 +74,7 @@ export async function updateValuationWithAI(
       aiData.what_you_could_do,
       aiData.analysis,
       aiData.ai_raw_response,
+      aiData.image_url,
       id
     )
     .run()

@@ -31,7 +31,7 @@ export const createValuation = createServerFn({ method: 'POST' })
     // 3. Calculate token conversions deterministically from the price
     const tokenConversions = calculateTokenConversions(aiResult.item_price)
 
-    // 4. Update valuation row with AI results + token conversions
+    // 4. Update valuation row with AI results + token conversions + image
     await updateValuationWithAI(id, {
       item_name: aiResult.item_name,
       item_price: aiResult.item_price,
@@ -41,6 +41,7 @@ export const createValuation = createServerFn({ method: 'POST' })
       what_you_could_do: JSON.stringify(aiResult.what_you_could_do),
       analysis: aiResult.analysis,
       ai_raw_response: JSON.stringify(aiResult),
+      image_url: aiResult.image_url,
     })
 
     return { id }

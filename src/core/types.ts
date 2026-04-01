@@ -23,6 +23,7 @@ export interface AITokenAnalysisResponse {
   tier: Tier
   what_you_could_do: WhatYouCouldDo[]
   analysis: string
+  image_url: string | null
 }
 
 export interface TokenAnalysisResult extends AITokenAnalysisResponse {
@@ -41,6 +42,7 @@ export interface Valuation {
   what_you_could_do: string | null // JSON string in DB
   analysis: string | null
   ai_raw_response: string | null
+  image_url: string | null
   created_at: string
   updated_at: string
 }

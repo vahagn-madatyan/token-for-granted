@@ -38,3 +38,29 @@ export async function setCachedValuation(
 ): Promise<void> {
   await env.KV.put(key, JSON.stringify(data), { expirationTtl: 3600 })
 }
+
+/**
+ * Compute a cache key for product images. Format: image:${sha256hex}
+ */
+export async function computeImageCacheKey(itemName: string): Promise<string> {
+  const encoder = new TextEncoder()
+  const data = encoder.encode(itemName)
+  const hashBuffer = await crypto.subtle.digest('SHA-256', data)
+  const hashArray = Array.from(new Uint8Array(hashBuffer))
+  const hashHex = hashArray.map((b) => b.toString(16).padStart(2, '0')).join('')
+  return `image:${hashHex}`
+}
+
+/**
+ * Retrieve a cached product image from KV. Returns base64 data URL or null.
+ */
+export async function getCachedImage(key: string): Promise<string | null> {
+  return await env.KV.get(key, 'text') ?? null
+}
+
+/**
+ * Store a product image in KV with 24-hour TTL.
+ */
+export async function setCachedImage(key: string, dataUrl: string): Promise<void> {
+  await env.KV.put(key, dataUrl, { expirationTtl: 86400 })
+}

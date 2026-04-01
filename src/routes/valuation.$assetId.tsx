@@ -167,6 +167,7 @@ function ValuationReveal() {
             itemName={valuation.item_name || valuation.description}
             category={valuation.category}
             tier={valuation.tier}
+            imageUrl={valuation.image_url}
           />
         </motion.div>
       </motion.section>

@@ -1,7 +1,8 @@
 import { env } from 'cloudflare:workers'
 import OpenAI from 'openai'
 import type { AITokenAnalysisResponse, AssetCategory, Tier } from '~/core/types'
-import { computeCacheKey, getCachedValuation, setCachedValuation } from './cache.server'
+import { computeCacheKey, getCachedValuation, setCachedValuation, computeImageCacheKey, getCachedImage, setCachedImage } from './cache.server'
+import { generateProductImage } from './image.server'
 
 const TOKEN_ANALYSIS_SYSTEM_PROMPT = `You are the Token For Granted engine — an AI opportunity cost calculator. Given an item someone wants to buy, estimate its real-world USD price and generate concrete things they could do with AI tokens instead.
 
@@ -93,7 +94,18 @@ export async function generateTokenAnalysis(
     result = generateDeterministicFallback(description, category)
   }
 
-  // 4. Cache the result
+  // 4. Generate product image (with KV cache)
+  const imageCacheKey = await computeImageCacheKey(result.item_name)
+  let imageUrl = await getCachedImage(imageCacheKey)
+  if (!imageUrl) {
+    imageUrl = await generateProductImage(result.item_name, category)
+    if (imageUrl) {
+      await setCachedImage(imageCacheKey, imageUrl)
+    }
+  }
+  result.image_url = imageUrl
+
+  // 5. Cache the full result (including image_url)
   await setCachedValuation(cacheKey, result)
 
   return result
@@ -132,6 +144,7 @@ function parseAIResponse(text: string): AITokenAnalysisResponse | null {
         icon_hint: String(item.icon_hint ?? 'robot'),
       })),
       analysis: parsed.analysis ?? 'That money could go a lot further as AI tokens.',
+      image_url: null,
     }
   } catch {
     return null
@@ -223,5 +236,6 @@ export function generateDeterministicFallback(
     tier,
     what_you_could_do: categoryActions[category],
     analysis: `That ${descriptionExcerpt} costs ~$${itemPrice}. Instead, you could mass-produce AI-powered projects that actually grow in value over time.`,
+    image_url: null,
   }
 }

@@ -1,0 +1,1039 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Token For Granted // System Architecture</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&family=Inter:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  /* ===== RESET & BASE ===== */
+  *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+  :root {
+    --bg: #060e20;
+    --surface-1: #091328;
+    --surface-2: #0f1930;
+    --surface-3: #141f38;
+    --surface-4: #192540;
+    --cyan: #8ff5ff;
+    --cyan-bright: #00eefc;
+    --magenta: #ff59e3;
+    --red: #ff4655;
+    --lime: #deffab;
+    --text: #dee5ff;
+    --outline: #6d758c;
+    --font-headline: 'Space Grotesk', sans-serif;
+    --font-body: 'Inter', sans-serif;
+  }
+
+  html { font-size: 16px; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-body);
+    min-height: 100vh;
+    overflow-x: hidden;
+    position: relative;
+  }
+
+  /* ===== NOISE TEXTURE ===== */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    opacity: 0.035;
+    pointer-events: none;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 256px 256px;
+  }
+
+  /* ===== SCANLINE OVERLAY ===== */
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    z-index: 9999;
+    pointer-events: none;
+    background: repeating-linear-gradient(
+      0deg,
+      transparent,
+      transparent 2px,
+      rgba(0, 0, 0, 0.06) 2px,
+      rgba(0, 0, 0, 0.06) 4px
+    );
+  }
+
+  /* ===== HUD FRAME ===== */
+  .hud-frame {
+    position: fixed;
+    inset: 12px;
+    z-index: 10;
+    pointer-events: none;
+  }
+  .hud-corner {
+    position: absolute;
+    width: 32px;
+    height: 32px;
+  }
+  .hud-corner--tl { top: 0; left: 0; border-top: 2px solid var(--cyan); border-left: 2px solid var(--cyan); }
+  .hud-corner--tr { top: 0; right: 0; border-top: 2px solid var(--cyan); border-right: 2px solid var(--cyan); }
+  .hud-corner--bl { bottom: 0; left: 0; border-bottom: 2px solid var(--cyan); border-left: 2px solid var(--cyan); }
+  .hud-corner--br { bottom: 0; right: 0; border-bottom: 2px solid var(--cyan); border-right: 2px solid var(--cyan); }
+
+  .hud-edge {
+    position: absolute;
+    background: var(--cyan);
+    opacity: 0.12;
+  }
+  .hud-edge--top, .hud-edge--bottom { left: 40px; right: 40px; height: 1px; }
+  .hud-edge--top { top: 0; }
+  .hud-edge--bottom { bottom: 0; }
+  .hud-edge--left, .hud-edge--right { top: 40px; bottom: 40px; width: 1px; }
+  .hud-edge--left { left: 0; }
+  .hud-edge--right { right: 0; }
+
+  /* ===== LAYOUT ===== */
+  .container {
+    position: relative;
+    z-index: 1;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 28px 32px 20px;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    justify-content: center;
+  }
+
+  /* ===== HEADER ===== */
+  .header {
+    text-align: center;
+    position: relative;
+  }
+  .header__tag {
+    display: inline-block;
+    font-family: var(--font-headline);
+    font-size: 0.65rem;
+    font-weight: 500;
+    letter-spacing: 0.35em;
+    text-transform: uppercase;
+    color: var(--cyan);
+    background: rgba(143, 245, 255, 0.06);
+    padding: 6px 18px;
+    border: 1px solid rgba(143, 245, 255, 0.15);
+    margin-bottom: 12px;
+  }
+  .header__title {
+    font-family: var(--font-headline);
+    font-size: clamp(1.4rem, 4vw, 2.4rem);
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    background: linear-gradient(135deg, var(--cyan) 0%, var(--text) 50%, var(--magenta) 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    line-height: 1.2;
+  }
+  .header__subtitle {
+    font-family: var(--font-body);
+    font-size: 0.8rem;
+    color: var(--outline);
+    letter-spacing: 0.15em;
+    margin-top: 8px;
+    text-transform: uppercase;
+  }
+  .header__line {
+    width: 120px;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--cyan), transparent);
+    margin: 14px auto 0;
+  }
+
+  /* ===== ARCHITECTURE CANVAS ===== */
+  .arch-canvas {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .arch-svg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ===== CONNECTION LINES ===== */
+  .conn-line {
+    fill: none;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    opacity: 0.6;
+  }
+  .conn-line--cyan { stroke: var(--cyan); }
+  .conn-line--magenta { stroke: var(--magenta); }
+  .conn-line--red { stroke: var(--red); }
+  .conn-line--lime { stroke: var(--lime); }
+
+  .conn-line--dashed {
+    stroke-dasharray: 8 6;
+    animation: dashFlow 1.2s linear infinite;
+  }
+  @keyframes dashFlow {
+    to { stroke-dashoffset: -28; }
+  }
+
+  /* ===== NODES GRID ===== */
+  .nodes-grid {
+    position: relative;
+    z-index: 2;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr 1fr;
+    grid-template-rows: auto auto auto;
+    gap: 20px;
+    width: 100%;
+    max-width: 1200px;
+  }
+
+  /* ===== NODE CARD ===== */
+  .node {
+    position: relative;
+    background: var(--surface-2);
+    padding: 16px 14px 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    cursor: default;
+    transition: transform 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94), box-shadow 0.3s ease;
+  }
+
+  .node::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border: 1px solid rgba(109, 117, 140, 0.15);
+    pointer-events: none;
+    transition: border-color 0.3s ease;
+  }
+
+  .node:hover {
+    transform: translateY(-4px);
+  }
+  .node:hover::before {
+    border-color: rgba(143, 245, 255, 0.3);
+  }
+
+  .node__glow {
+    position: absolute;
+    inset: -1px;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+    pointer-events: none;
+  }
+  .node:hover .node__glow { opacity: 1; }
+
+  .node__glow--cyan { box-shadow: 0 0 30px rgba(143, 245, 255, 0.12), inset 0 0 30px rgba(143, 245, 255, 0.03); }
+  .node__glow--magenta { box-shadow: 0 0 30px rgba(255, 89, 227, 0.12), inset 0 0 30px rgba(255, 89, 227, 0.03); }
+  .node__glow--red { box-shadow: 0 0 30px rgba(255, 70, 85, 0.12), inset 0 0 30px rgba(255, 70, 85, 0.03); }
+  .node__glow--lime { box-shadow: 0 0 30px rgba(222, 255, 171, 0.12), inset 0 0 30px rgba(222, 255, 171, 0.03); }
+
+  .node__icon {
+    width: 36px;
+    height: 36px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 20px;
+    border-radius: 0;
+    position: relative;
+  }
+
+  .node__icon svg {
+    width: 24px;
+    height: 24px;
+  }
+
+  .node__label {
+    font-family: var(--font-headline);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    text-align: center;
+    line-height: 1.4;
+  }
+
+  .node__sublabel {
+    font-family: var(--font-body);
+    font-size: 0.625rem;
+    color: var(--outline);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    text-align: center;
+  }
+
+  /* Node color accents */
+  .node--cyan .node__icon { color: var(--cyan); }
+  .node--cyan .node__label { color: var(--cyan); }
+  .node--magenta .node__icon { color: var(--magenta); }
+  .node--magenta .node__label { color: var(--magenta); }
+  .node--red .node__icon { color: var(--red); }
+  .node--red .node__label { color: var(--red); }
+  .node--lime .node__icon { color: var(--lime); }
+  .node--lime .node__label { color: var(--lime); }
+
+  /* Grid placement */
+  .node--browser   { grid-column: 1 / 2; grid-row: 2; }
+  .node--workers   { grid-column: 2 / 3; grid-row: 2; }
+  .node--d1        { grid-column: 3 / 4; grid-row: 3; }
+  .node--kv        { grid-column: 3 / 4; grid-row: 1; }
+  .node--gateway   { grid-column: 3 / 4; grid-row: 2; }
+  .node--ai        { grid-column: 4 / 5; grid-row: 2; }
+  .node--pricing   { grid-column: 4 / 5; grid-row: 3; }
+
+  /* ===== TOOLTIPS ===== */
+  .node__tooltip {
+    position: absolute;
+    bottom: calc(100% + 14px);
+    left: 50%;
+    transform: translateX(-50%) translateY(6px);
+    background: var(--surface-3);
+    border: 1px solid rgba(143, 245, 255, 0.2);
+    padding: 12px 16px;
+    font-family: var(--font-body);
+    font-size: 0.7rem;
+    line-height: 1.6;
+    color: var(--text);
+    white-space: nowrap;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s ease, transform 0.25s ease;
+    z-index: 100;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.5);
+  }
+  .node__tooltip::after {
+    content: '';
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    border: 6px solid transparent;
+    border-top-color: var(--surface-3);
+  }
+  .node:hover .node__tooltip {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .tooltip-line {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .tooltip-line::before {
+    content: '';
+    width: 4px;
+    height: 4px;
+    background: var(--cyan);
+    flex-shrink: 0;
+  }
+  .node--magenta .tooltip-line::before { background: var(--magenta); }
+  .node--red .tooltip-line::before { background: var(--red); }
+  .node--lime .tooltip-line::before { background: var(--lime); }
+
+  /* ===== TRACE BUTTON ===== */
+  .trace-section {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .trace-btn {
+    font-family: var(--font-headline);
+    font-size: 0.7rem;
+    font-weight: 600;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--bg);
+    background: var(--cyan);
+    border: none;
+    padding: 12px 32px;
+    cursor: pointer;
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s ease;
+  }
+  .trace-btn:hover {
+    background: var(--cyan-bright);
+    box-shadow: 0 0 24px rgba(143, 245, 255, 0.3);
+  }
+  .trace-btn:active {
+    transform: scale(0.97);
+  }
+  .trace-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+  .trace-btn::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(90deg, transparent 0%, rgba(255,255,255,0.2) 50%, transparent 100%);
+    transform: translateX(-100%);
+    transition: transform 0.5s ease;
+  }
+  .trace-btn:hover::before {
+    transform: translateX(100%);
+  }
+
+  .trace-status {
+    font-family: var(--font-body);
+    font-size: 0.65rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--outline);
+    min-width: 200px;
+    text-align: left;
+  }
+  .trace-status--active {
+    color: var(--lime);
+  }
+
+  /* ===== TRACE DOT ===== */
+  .trace-dot {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--cyan-bright);
+    box-shadow: 0 0 16px var(--cyan), 0 0 40px rgba(0, 238, 252, 0.4);
+    z-index: 50;
+    opacity: 0;
+    pointer-events: none;
+    transition: none;
+  }
+  .trace-dot--active {
+    opacity: 1;
+  }
+
+  /* ===== STATS BAR ===== */
+  .stats-bar {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+    padding: 10px 0 4px;
+    position: relative;
+  }
+  .stats-bar::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 10%;
+    right: 10%;
+    height: 1px;
+    background: linear-gradient(90deg, transparent, var(--surface-4), var(--outline), var(--surface-4), transparent);
+  }
+
+  .stat {
+    font-family: var(--font-headline);
+    font-size: 0.6rem;
+    font-weight: 500;
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    color: var(--outline);
+    padding: 6px 12px;
+    background: var(--surface-1);
+    border: 1px solid rgba(109, 117, 140, 0.1);
+    transition: color 0.3s ease, border-color 0.3s ease;
+  }
+  .stat:hover {
+    color: var(--text);
+    border-color: rgba(109, 117, 140, 0.3);
+  }
+  .stat__value {
+    color: var(--cyan);
+  }
+
+  .stat-sep {
+    font-family: var(--font-headline);
+    font-size: 0.5rem;
+    color: rgba(109, 117, 140, 0.3);
+    letter-spacing: 0.3em;
+  }
+
+  /* ===== LEGEND ===== */
+  .legend {
+    display: flex;
+    justify-content: center;
+    gap: 24px;
+    flex-wrap: wrap;
+    padding-bottom: 8px;
+  }
+  .legend-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: var(--font-body);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--outline);
+  }
+  .legend-swatch {
+    width: 20px;
+    height: 2px;
+    position: relative;
+  }
+  .legend-swatch--cyan { background: var(--cyan); }
+  .legend-swatch--magenta { background: var(--magenta); }
+  .legend-swatch--red { background: var(--red); }
+  .legend-swatch--lime { background: var(--lime); }
+
+  /* ===== NODE HIGHLIGHT DURING TRACE ===== */
+  .node--trace-active {
+    transform: translateY(-4px);
+  }
+  .node--trace-active::before {
+    border-color: var(--cyan-bright) !important;
+  }
+  .node--trace-active .node__glow {
+    opacity: 1 !important;
+  }
+
+  /* ===== PULSE ANIMATION ===== */
+  @keyframes nodePulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(143, 245, 255, 0); }
+    50% { box-shadow: 0 0 20px 4px rgba(143, 245, 255, 0.15); }
+  }
+  .node--trace-active {
+    animation: nodePulse 0.8s ease-in-out;
+  }
+
+  /* ===== RESPONSIVE ===== */
+  @media (max-width: 1024px) {
+    .nodes-grid {
+      grid-template-columns: 1fr 1fr;
+      grid-template-rows: auto;
+      gap: 16px;
+    }
+    .node--browser   { grid-column: 1; grid-row: 1; }
+    .node--workers   { grid-column: 2; grid-row: 1; }
+    .node--kv        { grid-column: 1; grid-row: 2; }
+    .node--gateway   { grid-column: 2; grid-row: 2; }
+    .node--d1        { grid-column: 1; grid-row: 3; }
+    .node--ai        { grid-column: 2; grid-row: 3; }
+    .node--pricing   { grid-column: 1 / 3; grid-row: 4; }
+    .arch-svg { display: none; }
+  }
+
+  @media (max-width: 600px) {
+    .container { padding: 32px 16px 16px; gap: 24px; }
+    .nodes-grid {
+      grid-template-columns: 1fr;
+    }
+    .node--browser, .node--workers, .node--kv, .node--gateway,
+    .node--d1, .node--ai, .node--pricing {
+      grid-column: 1;
+      grid-row: auto;
+    }
+    .stat { font-size: 0.5rem; padding: 4px 8px; }
+    .legend { gap: 12px; }
+    .node__tooltip { white-space: normal; min-width: 200px; max-width: 260px; }
+  }
+
+  /* ===== BACKGROUND GRID ===== */
+  .bg-grid {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background-image:
+      linear-gradient(rgba(143, 245, 255, 0.015) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(143, 245, 255, 0.015) 1px, transparent 1px);
+    background-size: 60px 60px;
+  }
+
+  /* ===== FLOATING PARTICLES ===== */
+  .particles {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    overflow: hidden;
+  }
+  .particle {
+    position: absolute;
+    width: 2px;
+    height: 2px;
+    background: var(--cyan);
+    border-radius: 50%;
+    opacity: 0;
+    animation: particleDrift linear infinite;
+  }
+  @keyframes particleDrift {
+    0% { transform: translateY(100vh) translateX(0); opacity: 0; }
+    10% { opacity: 0.4; }
+    90% { opacity: 0.4; }
+    100% { transform: translateY(-20px) translateX(40px); opacity: 0; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Background layers -->
+<div class="bg-grid"></div>
+<div class="particles" id="particles"></div>
+
+<!-- HUD Frame -->
+<div class="hud-frame">
+  <div class="hud-corner hud-corner--tl"></div>
+  <div class="hud-corner hud-corner--tr"></div>
+  <div class="hud-corner hud-corner--bl"></div>
+  <div class="hud-corner hud-corner--br"></div>
+  <div class="hud-edge hud-edge--top"></div>
+  <div class="hud-edge hud-edge--bottom"></div>
+  <div class="hud-edge hud-edge--left"></div>
+  <div class="hud-edge hud-edge--right"></div>
+</div>
+
+<!-- Main container -->
+<div class="container">
+
+  <!-- Header -->
+  <header class="header">
+    <div class="header__tag">Tactical Arcana</div>
+    <h1 class="header__title">Token For Granted // System Architecture</h1>
+    <p class="header__subtitle">Cloudflare Full-Stack Infrastructure</p>
+    <div class="header__line"></div>
+  </header>
+
+  <!-- Architecture Visualization -->
+  <div class="arch-canvas" id="archCanvas">
+    <!-- SVG Connection Lines -->
+    <svg class="arch-svg" id="connSvg" preserveAspectRatio="none">
+      <defs>
+        <filter id="glowCyan" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+        <filter id="glowMagenta" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+        <filter id="glowRed" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+        <filter id="glowLime" x="-50%" y="-50%" width="200%" height="200%">
+          <feGaussianBlur stdDeviation="3" result="blur"/>
+          <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+        </filter>
+      </defs>
+    </svg>
+
+    <!-- Trace dot -->
+    <div class="trace-dot" id="traceDot"></div>
+
+    <!-- Service Nodes Grid -->
+    <div class="nodes-grid" id="nodesGrid">
+
+      <!-- Client Browser -->
+      <div class="node node--cyan node--browser" data-node="browser">
+        <div class="node__glow node__glow--cyan"></div>
+        <div class="node__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <rect x="2" y="3" width="20" height="14" rx="2"/>
+            <line x1="8" y1="21" x2="16" y2="21"/>
+            <line x1="12" y1="17" x2="12" y2="21"/>
+          </svg>
+        </div>
+        <div class="node__label">Client Browser</div>
+        <div class="node__sublabel">Entry Point</div>
+        <div class="node__tooltip">
+          <div class="tooltip-line">React SPA with SSR hydration</div>
+          <div class="tooltip-line">TanStack Router client-side navigation</div>
+          <div class="tooltip-line">Streaming HTML responses</div>
+        </div>
+      </div>
+
+      <!-- Cloudflare Workers -->
+      <div class="node node--cyan node--workers" data-node="workers">
+        <div class="node__glow node__glow--cyan"></div>
+        <div class="node__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <polygon points="12 2 22 8.5 22 15.5 12 22 2 15.5 2 8.5 12 2"/>
+            <line x1="12" y1="22" x2="12" y2="15.5"/>
+            <polyline points="22 8.5 12 15.5 2 8.5"/>
+            <polyline points="2 15.5 12 8.5 22 15.5"/>
+            <line x1="12" y1="2" x2="12" y2="8.5"/>
+          </svg>
+        </div>
+        <div class="node__label">Cloudflare Workers</div>
+        <div class="node__sublabel">TanStack Start SSR</div>
+        <div class="node__tooltip">
+          <div class="tooltip-line">TanStack Start SSR</div>
+          <div class="tooltip-line">Server functions with Zod validation</div>
+          <div class="tooltip-line">Zero cold starts</div>
+        </div>
+      </div>
+
+      <!-- KV Namespace -->
+      <div class="node node--cyan node--kv" data-node="kv">
+        <div class="node__glow node__glow--cyan"></div>
+        <div class="node__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+        </div>
+        <div class="node__label">KV Namespace</div>
+        <div class="node__sublabel">Cache Layer</div>
+        <div class="node__tooltip">
+          <div class="tooltip-line">1-hour TTL for text</div>
+          <div class="tooltip-line">24-hour TTL for images</div>
+          <div class="tooltip-line">SHA-256 cache keys</div>
+        </div>
+      </div>
+
+      <!-- AI Gateway -->
+      <div class="node node--magenta node--gateway" data-node="gateway">
+        <div class="node__glow node__glow--magenta"></div>
+        <div class="node__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2L2 7l10 5 10-5-10-5z"/>
+            <path d="M2 17l10 5 10-5"/>
+            <path d="M2 12l10 5 10-5"/>
+          </svg>
+        </div>
+        <div class="node__label">AI Gateway</div>
+        <div class="node__sublabel">Routing + Budget</div>
+        <div class="node__tooltip">
+          <div class="tooltip-line">$10/mo budget cap</div>
+          <div class="tooltip-line">Dynamic routing</div>
+          <div class="tooltip-line">OpenAI-compat endpoint</div>
+        </div>
+      </div>
+
+      <!-- D1 Database -->
+      <div class="node node--red node--d1" data-node="d1">
+        <div class="node__glow node__glow--red"></div>
+        <div class="node__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <ellipse cx="12" cy="5" rx="9" ry="3"/>
+            <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"/>
+            <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"/>
+          </svg>
+        </div>
+        <div class="node__label">D1 Database</div>
+        <div class="node__sublabel">SQLite Storage</div>
+        <div class="node__tooltip">
+          <div class="tooltip-line">SQLite database</div>
+          <div class="tooltip-line">Parameterized queries</div>
+          <div class="tooltip-line">Valuations, scenarios, logs</div>
+        </div>
+      </div>
+
+      <!-- Workers AI -->
+      <div class="node node--magenta node--ai" data-node="ai">
+        <div class="node__glow node__glow--magenta"></div>
+        <div class="node__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 2a4 4 0 0 1 4 4c0 1.1-.9 2-2 2h-4c-1.1 0-2-.9-2-2a4 4 0 0 1 4-4z"/>
+            <path d="M8 8v2a4 4 0 0 0 8 0V8"/>
+            <line x1="12" y1="14" x2="12" y2="18"/>
+            <line x1="8" y1="18" x2="16" y2="18"/>
+            <line x1="7" y1="22" x2="10" y2="18"/>
+            <line x1="17" y1="22" x2="14" y2="18"/>
+          </svg>
+        </div>
+        <div class="node__label">Workers AI</div>
+        <div class="node__sublabel">Inference</div>
+        <div class="node__tooltip">
+          <div class="tooltip-line">Llama 3.1 8B (primary)</div>
+          <div class="tooltip-line">Mistral 7B (fallback)</div>
+          <div class="tooltip-line">Flux-1-Schnell (images)</div>
+        </div>
+      </div>
+
+      <!-- Token Pricing Engine -->
+      <div class="node node--lime node--pricing" data-node="pricing">
+        <div class="node__glow node__glow--lime"></div>
+        <div class="node__icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="12" y1="1" x2="12" y2="23"/>
+            <path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>
+          </svg>
+        </div>
+        <div class="node__label">Token Pricing</div>
+        <div class="node__sublabel">19 Providers</div>
+        <div class="node__tooltip">
+          <div class="tooltip-line">19 providers hardcoded</div>
+          <div class="tooltip-line">Deterministic calculation</div>
+          <div class="tooltip-line">No external API calls</div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- Legend -->
+  <div class="legend">
+    <div class="legend-item">
+      <div class="legend-swatch legend-swatch--cyan"></div>
+      Cache Operations
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch legend-swatch--magenta"></div>
+      AI Requests
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch legend-swatch--red"></div>
+      Database Writes
+    </div>
+    <div class="legend-item">
+      <div class="legend-swatch legend-swatch--lime"></div>
+      Responses
+    </div>
+  </div>
+
+  <!-- Trace Controls -->
+  <div class="trace-section">
+    <button class="trace-btn" id="traceBtn" onclick="startTrace()">
+      Trace Request
+    </button>
+    <div class="trace-status" id="traceStatus">READY // AWAITING DISPATCH</div>
+  </div>
+
+  <!-- Stats Bar -->
+  <div class="stats-bar">
+    <div class="stat"><span class="stat__value">19</span> Providers</div>
+    <div class="stat-sep">//</div>
+    <div class="stat"><span class="stat__value">1HR</span> Cache TTL</div>
+    <div class="stat-sep">//</div>
+    <div class="stat"><span class="stat__value">SHA-256</span> Keys</div>
+    <div class="stat-sep">//</div>
+    <div class="stat"><span class="stat__value">$10/MO</span> Cap</div>
+    <div class="stat-sep">//</div>
+    <div class="stat"><span class="stat__value">0ms</span> Cold Start</div>
+  </div>
+
+</div>
+
+<script>
+  // ===== PARTICLES =====
+  (function initParticles() {
+    const container = document.getElementById('particles');
+    const count = 20;
+    for (let i = 0; i < count; i++) {
+      const p = document.createElement('div');
+      p.className = 'particle';
+      p.style.left = Math.random() * 100 + '%';
+      p.style.animationDuration = (12 + Math.random() * 20) + 's';
+      p.style.animationDelay = (Math.random() * 15) + 's';
+      p.style.width = (1 + Math.random() * 2) + 'px';
+      p.style.height = p.style.width;
+      if (Math.random() > 0.7) p.style.background = '#ff59e3';
+      if (Math.random() > 0.9) p.style.background = '#deffab';
+      container.appendChild(p);
+    }
+  })();
+
+  // ===== SVG CONNECTION LINES =====
+  function getNodeCenter(nodeId) {
+    const el = document.querySelector(`[data-node="${nodeId}"]`);
+    if (!el) return { x: 0, y: 0 };
+    const canvas = document.getElementById('archCanvas');
+    const canvasRect = canvas.getBoundingClientRect();
+    const rect = el.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2 - canvasRect.left,
+      y: rect.top + rect.height / 2 - canvasRect.top
+    };
+  }
+
+  const connections = [
+    { from: 'browser', to: 'workers', color: 'cyan',    label: 'HTTP Request' },
+    { from: 'workers', to: 'kv',      color: 'cyan',    label: 'Cache Check' },
+    { from: 'workers', to: 'gateway',  color: 'magenta', label: 'AI Request' },
+    { from: 'gateway', to: 'ai',       color: 'magenta', label: 'Inference' },
+    { from: 'workers', to: 'd1',       color: 'red',     label: 'DB Write' },
+    { from: 'ai',      to: 'workers',  color: 'lime',    label: 'AI Response' },
+    { from: 'workers', to: 'browser',  color: 'lime',    label: 'Response' },
+    { from: 'workers', to: 'pricing',  color: 'lime',    label: 'Price Calc' },
+  ];
+
+  function drawConnections() {
+    const svg = document.getElementById('connSvg');
+    const canvas = document.getElementById('archCanvas');
+    const rect = canvas.getBoundingClientRect();
+    svg.setAttribute('viewBox', `0 0 ${rect.width} ${rect.height}`);
+
+    // Clear old lines (keep defs)
+    const defs = svg.querySelector('defs');
+    svg.innerHTML = '';
+    svg.appendChild(defs);
+
+    connections.forEach((conn, i) => {
+      const from = getNodeCenter(conn.from);
+      const to = getNodeCenter(conn.to);
+
+      // Compute control point for a subtle curve
+      const midX = (from.x + to.x) / 2;
+      const midY = (from.y + to.y) / 2;
+      const dx = to.x - from.x;
+      const dy = to.y - from.y;
+      const dist = Math.sqrt(dx * dx + dy * dy);
+      // Perpendicular offset for curvature
+      const offset = dist * 0.15;
+      const nx = -dy / dist * offset;
+      const ny = dx / dist * offset;
+
+      const path = document.createElementNS('http://www.w3.org/2000/svg', 'path');
+      const d = `M ${from.x} ${from.y} Q ${midX + nx} ${midY + ny} ${to.x} ${to.y}`;
+      path.setAttribute('d', d);
+      path.classList.add('conn-line', `conn-line--${conn.color}`, 'conn-line--dashed');
+      path.setAttribute('data-from', conn.from);
+      path.setAttribute('data-to', conn.to);
+
+      const filterMap = { cyan: 'glowCyan', magenta: 'glowMagenta', red: 'glowRed', lime: 'glowLime' };
+      path.setAttribute('filter', `url(#${filterMap[conn.color]})`);
+
+      // Vary animation speed
+      path.style.animationDuration = (0.8 + Math.random() * 0.8) + 's';
+
+      svg.appendChild(path);
+    });
+  }
+
+  // Initial draw + redraw on resize
+  window.addEventListener('load', drawConnections);
+  window.addEventListener('resize', drawConnections);
+
+  // ===== REQUEST TRACE =====
+  let traceRunning = false;
+
+  const traceSteps = [
+    { node: 'browser',  label: 'CLIENT REQUEST',       duration: 500 },
+    { node: 'workers',  label: 'WORKERS // SSR',        duration: 600 },
+    { node: 'kv',       label: 'KV // CACHE MISS',      duration: 400 },
+    { node: 'workers',  label: 'WORKERS // ROUTE AI',   duration: 300 },
+    { node: 'gateway',  label: 'AI GATEWAY // ROUTE',   duration: 500 },
+    { node: 'ai',       label: 'WORKERS AI // INFER',   duration: 800 },
+    { node: 'workers',  label: 'WORKERS // PROCESS',    duration: 400 },
+    { node: 'd1',       label: 'D1 // PERSIST',         duration: 500 },
+    { node: 'kv',       label: 'KV // CACHE STORE',     duration: 400 },
+    { node: 'workers',  label: 'WORKERS // RESPOND',    duration: 300 },
+    { node: 'browser',  label: 'CLIENT // RENDERED',    duration: 600 },
+  ];
+
+  function getNodeCenterAbs(nodeId) {
+    const el = document.querySelector(`[data-node="${nodeId}"]`);
+    if (!el) return { x: 0, y: 0 };
+    const rect = el.getBoundingClientRect();
+    return {
+      x: rect.left + rect.width / 2,
+      y: rect.top + rect.height / 2
+    };
+  }
+
+  function animateDotBetween(fromNode, toNode, duration) {
+    return new Promise(resolve => {
+      const dot = document.getElementById('traceDot');
+      const from = getNodeCenterAbs(fromNode);
+      const to = getNodeCenterAbs(toNode);
+
+      dot.classList.add('trace-dot--active');
+
+      const startTime = performance.now();
+      function step(now) {
+        const t = Math.min((now - startTime) / duration, 1);
+        // Ease in-out
+        const ease = t < 0.5 ? 2 * t * t : 1 - Math.pow(-2 * t + 2, 2) / 2;
+        const x = from.x + (to.x - from.x) * ease;
+        const y = from.y + (to.y - from.y) * ease;
+        dot.style.left = x + 'px';
+        dot.style.top = y + 'px';
+        dot.style.position = 'fixed';
+        if (t < 1) {
+          requestAnimationFrame(step);
+        } else {
+          resolve();
+        }
+      }
+      requestAnimationFrame(step);
+    });
+  }
+
+  async function startTrace() {
+    if (traceRunning) return;
+    traceRunning = true;
+
+    const btn = document.getElementById('traceBtn');
+    const status = document.getElementById('traceStatus');
+    const dot = document.getElementById('traceDot');
+
+    btn.disabled = true;
+    status.classList.add('trace-status--active');
+
+    // Clear previous highlights
+    document.querySelectorAll('.node--trace-active').forEach(n => n.classList.remove('node--trace-active'));
+
+    for (let i = 0; i < traceSteps.length; i++) {
+      const step = traceSteps[i];
+      const node = document.querySelector(`[data-node="${step.node}"]`);
+
+      status.textContent = `TRACE // ${step.label}`;
+
+      // Animate dot between nodes
+      if (i > 0) {
+        const prevNode = traceSteps[i - 1].node;
+        await animateDotBetween(prevNode, step.node, 350);
+      } else {
+        // Position dot at first node
+        const pos = getNodeCenterAbs(step.node);
+        dot.style.position = 'fixed';
+        dot.style.left = pos.x + 'px';
+        dot.style.top = pos.y + 'px';
+        dot.classList.add('trace-dot--active');
+      }
+
+      // Highlight current node
+      document.querySelectorAll('.node--trace-active').forEach(n => n.classList.remove('node--trace-active'));
+      if (node) {
+        node.classList.add('node--trace-active');
+      }
+
+      await new Promise(r => setTimeout(r, step.duration));
+    }
+
+    // Cleanup
+    dot.classList.remove('trace-dot--active');
+    document.querySelectorAll('.node--trace-active').forEach(n => n.classList.remove('node--trace-active'));
+
+    status.textContent = 'TRACE COMPLETE // 200 OK';
+    status.classList.remove('trace-status--active');
+
+    setTimeout(() => {
+      status.textContent = 'READY // AWAITING DISPATCH';
+      btn.disabled = false;
+      traceRunning = false;
+    }, 2000);
+  }
+</script>
+</body>
+</html>
