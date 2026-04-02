@@ -762,11 +762,12 @@
           </svg>
         </div>
         <div class="node__label">Workers AI</div>
-        <div class="node__sublabel">Inference</div>
+        <div class="node__sublabel">Text + Image Gen</div>
         <div class="node__tooltip">
-          <div class="tooltip-line">Llama 3.1 8B (primary)</div>
-          <div class="tooltip-line">Mistral 7B (fallback)</div>
-          <div class="tooltip-line">Flux-1-Schnell (images)</div>
+          <div class="tooltip-line"><strong>Text:</strong> Llama 3.1 8B (primary)</div>
+          <div class="tooltip-line"><strong>Text:</strong> Mistral 7B (fallback)</div>
+          <div class="tooltip-line"><strong>Image:</strong> Flux-1-Schnell (4 steps)</div>
+          <div class="tooltip-line">Images cached in KV (24hr TTL)</div>
         </div>
       </div>
 
@@ -823,6 +824,8 @@
   <div class="stats-bar">
     <div class="stat"><span class="stat__value">19</span> Providers</div>
     <div class="stat-sep">//</div>
+    <div class="stat"><span class="stat__value">FLUX</span> Image Gen</div>
+    <div class="stat-sep">//</div>
     <div class="stat"><span class="stat__value">1HR</span> Cache TTL</div>
     <div class="stat-sep">//</div>
     <div class="stat"><span class="stat__value">SHA-256</span> Keys</div>
@@ -869,8 +872,9 @@
   const connections = [
     { from: 'browser', to: 'workers', color: 'cyan',    label: 'HTTP Request' },
     { from: 'workers', to: 'kv',      color: 'cyan',    label: 'Cache Check' },
-    { from: 'workers', to: 'gateway',  color: 'magenta', label: 'AI Request' },
-    { from: 'gateway', to: 'ai',       color: 'magenta', label: 'Inference' },
+    { from: 'workers', to: 'gateway',  color: 'magenta', label: 'AI Text Analysis' },
+    { from: 'gateway', to: 'ai',       color: 'magenta', label: 'Text Inference' },
+    { from: 'workers', to: 'ai',       color: 'red',     label: 'Image Gen (Flux)' },
     { from: 'workers', to: 'd1',       color: 'red',     label: 'DB Write' },
     { from: 'ai',      to: 'workers',  color: 'lime',    label: 'AI Response' },
     { from: 'workers', to: 'browser',  color: 'lime',    label: 'Response' },
@@ -928,17 +932,20 @@
   let traceRunning = false;
 
   const traceSteps = [
-    { node: 'browser',  label: 'CLIENT REQUEST',       duration: 500 },
-    { node: 'workers',  label: 'WORKERS // SSR',        duration: 600 },
-    { node: 'kv',       label: 'KV // CACHE MISS',      duration: 400 },
-    { node: 'workers',  label: 'WORKERS // ROUTE AI',   duration: 300 },
-    { node: 'gateway',  label: 'AI GATEWAY // ROUTE',   duration: 500 },
-    { node: 'ai',       label: 'WORKERS AI // INFER',   duration: 800 },
-    { node: 'workers',  label: 'WORKERS // PROCESS',    duration: 400 },
-    { node: 'd1',       label: 'D1 // PERSIST',         duration: 500 },
-    { node: 'kv',       label: 'KV // CACHE STORE',     duration: 400 },
-    { node: 'workers',  label: 'WORKERS // RESPOND',    duration: 300 },
-    { node: 'browser',  label: 'CLIENT // RENDERED',    duration: 600 },
+    { node: 'browser',  label: 'CLIENT REQUEST',              duration: 500 },
+    { node: 'workers',  label: 'WORKERS // SSR',               duration: 600 },
+    { node: 'kv',       label: 'KV // CACHE MISS',             duration: 400 },
+    { node: 'workers',  label: 'WORKERS // ROUTE AI',          duration: 300 },
+    { node: 'gateway',  label: 'AI GATEWAY // TEXT ANALYSIS',  duration: 500 },
+    { node: 'ai',       label: 'WORKERS AI // LLAMA 8B',       duration: 800 },
+    { node: 'workers',  label: 'WORKERS // PARSE RESULT',      duration: 300 },
+    { node: 'ai',       label: 'WORKERS AI // FLUX IMAGE GEN', duration: 900 },
+    { node: 'workers',  label: 'WORKERS // IMAGE RECEIVED',    duration: 300 },
+    { node: 'pricing',  label: 'TOKEN PRICING // 19 PROVIDERS', duration: 400 },
+    { node: 'd1',       label: 'D1 // PERSIST ALL',            duration: 500 },
+    { node: 'kv',       label: 'KV // CACHE TEXT + IMAGE',     duration: 400 },
+    { node: 'workers',  label: 'WORKERS // RESPOND',           duration: 300 },
+    { node: 'browser',  label: 'CLIENT // RENDERED',           duration: 600 },
   ];
 
   function getNodeCenterAbs(nodeId) {
